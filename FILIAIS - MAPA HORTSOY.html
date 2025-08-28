@@ -1,0 +1,1628 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HortSoy - Filiais</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --header-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: #2c3e50;
+            --text-secondary: #7f8c8d;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --border-color: rgba(255, 255, 255, 0.2);
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --shadow-heavy: rgba(0, 0, 0, 0.3);
+            --accent-blue: #3498db;
+            --accent-orange: #e67e22;
+            --accent-red: #e74c3c;
+            --accent-green: #27ae60;
+            --accent-purple: #9b59b6;
+            --accent-yellow: #f39c12;
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            --header-bg: rgba(44, 62, 80, 0.95);
+            --text-primary: #ecf0f1;
+            --text-secondary: #bdc3c7;
+            --card-bg: rgba(44, 62, 80, 0.95);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --shadow-medium: rgba(0, 0, 0, 0.4);
+            --shadow-heavy: rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--primary-bg);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInFromTop {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 5px currentColor;
+            }
+            50% {
+                box-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        
+        .header {
+            background: #000000;
+            backdrop-filter: blur(14px);
+            padding: 0px 30px;
+            box-shadow: 0 7px 32px var(--shadow-medium);
+            position: relative;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            animation: slideInFromTop 0.8s ease-out;
+        }
+        
+        .company-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .company-title {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px var(--shadow-light);
+            transition: all 0.3s ease;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .company-title:hover {
+            transform: scale(1.05);
+            text-shadow: 0 4px 8px rgba(255, 255, 255, 0.3);
+        }
+        
+        .company-subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin: 5px 0 0 0;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .legend {
+            margin-right: 180px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--card-bg);
+            padding: 10px 16px;
+            border-radius: 25px;
+            border: 2px solid;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: bounceIn 0.6s ease-out;
+            animation-delay: calc(var(--delay, 0) * 0.1s);
+        }
+
+        .legend-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .legend-item::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        .legend-item:hover::before {
+            left: 100%;
+        }
+
+        .legend-item:hover::after {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .legend-item:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px var(--shadow-medium);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .legend-item:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .legend-item.santa-juliana {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+            --delay: 1;
+        }
+        
+        .legend-item.ibia {
+            border-color: var(--accent-orange);
+            color: var(--accent-orange);
+            --delay: 2;
+        }
+        
+        .legend-item.patos {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+            --delay: 3;
+        }
+        
+        .legend-item.passos {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+            --delay: 4;
+        }
+        
+        .legend-item.active {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px var(--shadow-medium);
+            border-color: rgba(255, 255, 255, 0.8);
+            animation: glow 2s infinite;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .legend-color:hover {
+            transform: scale(1.2);
+            animation: glow 1s infinite;
+        }
+
+        .driver-info {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-left: 4px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .legend-item:hover .driver-info {
+            color: var(--text-primary);
+            transform: scale(1.1);
+        }
+        
+        .controls {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 1000;
+        }
+        
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px var(--shadow-medium);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            animation: float 3s ease-in-out infinite;
+            animation-delay: calc(var(--btn-delay, 0) * 0.2s);
+        }
+
+        .control-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .control-btn:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .control-btn:hover {
+            transform: scale(1.2) rotate(5deg);
+            box-shadow: 0 8px 25px var(--shadow-heavy);
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .control-btn:active {
+            transform: scale(1.1) rotate(0deg);
+        }
+        
+        .control-btn.active {
+            background: var(--accent-blue);
+            color: white;
+            transform: scale(1.1);
+            animation: pulse 1.5s infinite;
+        }
+
+        .control-btn:nth-child(1) { --btn-delay: 1; }
+        .control-btn:nth-child(2) { --btn-delay: 2; }
+        .control-btn:nth-child(3) { --btn-delay: 3; }
+        .control-btn:nth-child(4) { --btn-delay: 4; }
+        .control-btn:nth-child(5) { --btn-delay: 5; }
+        .control-btn:nth-child(6) { --btn-delay: 6; }
+        
+        #map {
+            height: calc(100vh - 10px);
+            width: 100%;
+            border-radius: 0;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        #map:hover {
+            filter: brightness(1.05);
+        }
+        
+        .manual-controls {
+            position: fixed;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px var(--shadow-heavy);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border-color);
+            width: 320px;
+            max-height: 80vh;
+            overflow-y: auto;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-50%) translateX(-120%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1001;
+        }
+        
+        .manual-controls.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(-50%) translateX(0);
+            animation: bounceIn 0.6s ease-out;
+        }
+        
+        .manual-title {
+            color: var(--text-primary);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .manual-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-blue);
+            transition: width 0.6s ease;
+        }
+
+        .manual-controls.active .manual-title::after {
+            width: 100%;
+        }
+        
+        .manual-select {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .manual-select::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .manual-select:focus::before {
+            left: 100%;
+        }
+        
+        .manual-select:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            transform: scale(1.02);
+        }
+
+        .manual-select:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow-medium);
+        }
+        
+        .manual-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--accent-blue), #2980b9);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .manual-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .manual-btn:hover::before {
+            left: 100%;
+        }
+        
+        .manual-btn:hover:not(:disabled) {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.4);
+        }
+
+        .manual-btn:active:not(:disabled) {
+            transform: translateY(-1px) scale(0.98);
+        }
+        
+        .manual-btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+            opacity: 0.6;
+            transform: none;
+        }
+        
+        .manual-help {
+            color: var(--text-secondary);
+            font-size: 12px;
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .manual-help:hover {
+            color: var(--text-primary);
+            transform: scale(1.05);
+        }
+        
+        .branch-suggestions {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .branch-suggestions:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px var(--shadow-medium);
+        }
+        
+        .branch-title {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .branch-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .branch-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .branch-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            padding-left: 10px;
+            border-radius: 8px;
+        }
+        
+        .branch-item:last-child {
+            border-bottom: none;
+        }
+        
+        .branch-item span:first-child {
+            flex: 1;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .branch-item:hover span:first-child {
+            color: var(--accent-blue);
+        }
+        
+        .branch-item .branch-distance {
+            background: var(--accent-blue);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .branch-item:hover .branch-distance {
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.4);
+        }
+        
+        .custom-marker {
+            background: #484349;
+            border-radius: 50%;
+            border: 1px solid #00A859;
+            box-shadow: 0 4px 20px var(--shadow-heavy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .custom-marker::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0, 168, 89, 0.3) 0%, transparent 70%);
+            transform: scale(0);
+            transition: transform 0.3s ease;
+        }
+
+        .custom-marker:hover::before {
+            transform: scale(1);
+            animation: ripple 0.6s ease-out;
+        }
+        
+        .custom-marker:hover {
+            transform: scale(1.3) rotate(10deg);
+            box-shadow: 0 8px 35px var(--shadow-heavy);
+            border-color: #00ff6a;
+            animation: pulse 0.6s ease-out;
+        }
+
+        .custom-marker:active {
+            transform: scale(1.1) rotate(0deg);
+        }
+        
+        .city-label {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px var(--shadow-light);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .city-label:hover {
+            transform: translateX(-50%) scale(1.1);
+            box-shadow: 0 4px 15px var(--shadow-medium);
+        }
+
+        .popup-content {
+            text-align: center;
+            padding: 10px;
+            animation: bounceIn 0.5s ease-out;
+        }
+
+        .popup-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .popup-title:hover {
+            color: var(--accent-blue);
+            transform: scale(1.05);
+        }
+
+        .popup-driver {
+            font-size: 14px;
+            color: var(--accent-blue);
+            font-weight: 600;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .popup-driver:hover {
+            transform: scale(1.1);
+            text-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+        }
+
+        .popup-type {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-style: italic;
+            transition: all 0.3s ease;
+        }
+
+        .popup-type:hover {
+            color: var(--text-primary);
+        }
+        
+        .leaflet-popup-content-wrapper {
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            animation: bounceIn 0.5s ease-out;
+        }
+        
+        .leaflet-popup-tip {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .leaflet-routing-container {
+            max-width: 340px;
+            margin-top: 80px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            animation: slideInFromTop 0.6s ease-out;
+            transition: all 0.3s ease;
+        }
+
+        .leaflet-routing-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--shadow-heavy);
+        }
+        
+        .leaflet-routing-container h2 {
+            background: linear-gradient(135deg, var(--accent-blue), #2980b9);
+            color: white;
+            margin: 0;
+            padding: 12px 15px;
+            border-radius: 12px 12px 0 0;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .leaflet-routing-container h2:hover {
+            background: linear-gradient(135deg, #2980b9, var(--accent-blue));
+        }
+        
+        .leaflet-routing-container h3 {
+            color: var(--text-primary);
+            font-size: 13px;
+            margin: 10px 0 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        .leaflet-routing-container h3:hover {
+            color: var(--accent-blue);
+        }
+        
+        .leaflet-routing-alt {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .leaflet-routing-alt:hover {
+            background: rgba(52, 152, 219, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .leaflet-routing-alt-first {
+            background: rgba(52, 152, 219, 0.1);
+        }
+        
+        .leaflet-routing-instruction {
+            color: var(--text-secondary);
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .leaflet-routing-instruction:hover {
+            color: var(--text-primary);
+        }
+
+        /* Efeitos especiais para o mapa */
+        .leaflet-marker-icon {
+            transition: all 0.3s ease !important;
+        }
+
+        .leaflet-marker-icon:hover {
+            filter: brightness(1.2) drop-shadow(0 0 10px rgba(0, 168, 89, 0.6));
+        }
+
+        /* Animações de entrada para elementos do mapa */
+        .leaflet-marker-pane {
+            animation: fadeIn 1s ease-out;
+        }
+
+        .leaflet-tile-pane {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* Efeitos de hover para tiles do mapa */
+        .leaflet-tile {
+            transition: all 0.3s ease;
+        }
+
+        .leaflet-tile:hover {
+            filter: brightness(1.05);
+        }
+
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-blue);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2980b9;
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+                animation-duration: 0.6s;
+            }
+            
+            .company-title {
+                font-size: 24px;
+            }
+            
+            .company-subtitle {
+                font-size: 14px;
+            }
+            
+            .legend {
+                margin-right: 0;
+                justify-content: center;
+            }
+            
+            .legend-item {
+                padding: 8px 12px;
+                font-size: 12px;
+                animation-duration: 0.4s;
+            }
+
+            .driver-info {
+                font-size: 10px;
+            }
+            
+            .controls {
+                right: 10px;
+                gap: 8px;
+            }
+            
+            .control-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 16px;
+                animation-duration: 2s;
+            }
+            
+            .manual-controls {
+                left: 10px;
+                right: 10px;
+                width: auto;
+                max-width: none;
+            }
+            
+            .leaflet-routing-container {
+                max-width: 280px;
+                margin-top: 60px;
+            }
+
+            .city-label {
+                font-size: 10px;
+                padding: 3px 6px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header {
+                padding: 10px 15px;
+            }
+            
+            .company-info {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .legend {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .legend-item {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+            
+            .legend-color {
+                width: 12px;
+                height: 12px;
+            }
+            
+            .controls {
+                bottom: 20px;
+                top: auto;
+                right: 50%;
+                transform: translateX(50%);
+                flex-direction: row;
+                gap: 10px;
+            }
+            
+            .control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+            
+            .manual-controls {
+                top: 20px;
+                bottom: 20px;
+                left: 10px;
+                right: 10px;
+                transform: translateY(-100%);
+                max-height: none;
+                height: auto;
+            }
+            
+            .manual-controls.active {
+                transform: translateY(0);
+            }
+
+            .city-label {
+                font-size: 9px;
+                padding: 2px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="company-info">
+            <div>
+                <h1 class="company-title">HortSoy - Filiais</h1>
+            </div>
+            <div class="legend">
+                <div class="legend-item santa-juliana" data-route="santa-juliana">
+                    <div class="legend-color" style="background-color: var(--accent-blue);"></div>
+                    <span>🚛 Santa Juliana</span>
+                    <span class="driver-info">(Baru)</span>
+                </div>
+                <div class="legend-item ibia" data-route="ibia">
+                    <div class="legend-color" style="background-color: var(--accent-orange);"></div>
+                    <span>🚛 Ibiá</span>
+                    <span class="driver-info">(Diego)</span>
+                </div>
+                <div class="legend-item patos" data-route="patos">
+                    <div class="legend-color" style="background-color: var(--accent-red);"></div>
+                    <span>🚛 Patos de Minas</span>
+                    <span class="driver-info">(André)</span>
+                </div>
+                <div class="legend-item passos" data-route="passos">
+                    <div class="legend-color" style="background-color: var(--accent-green);"></div>
+                    <span>🚛 Passos</span>
+                    <span class="driver-info">(Luis)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="toggleTheme()" title="Alternar Tema">
+            <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+        <button class="control-btn" onclick="toggleAllRoutes()" title="Mostrar/Ocultar Todas as Rotas">
+            <i class="fas fa-route"></i>
+        </button>
+        <button class="control-btn" onclick="centerMap()" title="Centralizar Mapa">
+            <i class="fas fa-crosshairs"></i>
+        </button>
+        <button class="control-btn" onclick="toggleManualMode()" id="manualBtn" title="Modo Manual">
+            <i class="fas fa-hand-pointer"></i>
+        </button>
+        <button class="control-btn" onclick="clearManualRoute()" title="Limpar Rotas Manuais">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>
+
+    <div class="manual-controls" id="manualControls">
+        <div class="manual-title">Criar Rota Manual</div>
+        <select class="manual-select" id="originSelect">
+            <option value="">Selecione a origem</option>
+        </select>
+        <select class="manual-select" id="destinationSelect">
+            <option value="">Selecione o destino</option>
+        </select>
+        <button class="manual-btn" onclick="createManualRoute()" id="createRouteBtn" disabled>
+            Criar Rota
+        </button>
+        <div class="manual-help">
+            Clique nos marcadores para criar rotas rapidamente
+        </div>
+        <div class="branch-suggestions" id="branchSuggestions" style="display: none;">
+            <div class="branch-title">Filiais no Caminho</div>
+            <div class="branch-list" id="branchList"></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <script>
+
+        // Inicializar o mapa
+        const map = L.map('map').setView([-19.5, -46.8], 9);
+
+        // Variável para controlar o tema
+        let isDarkTheme = false;
+
+        // Adicionar camada de tile
+        let tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 18
+        }).addTo(map);
+
+        // Definir cores para cada rota
+        const routeColors = {
+            'santa-juliana': '#3498db',
+            'ibia': '#e67e22',
+            'patos': '#e74c3c',
+            'passos': '#27ae60',
+            'manual': '#f39c12'
+        };
+
+        // Dados dos motoristas para cada base
+        const driversData = {
+            'santa-juliana': 'Baru',
+            'ibia': 'Diego',
+            'patos-minas': 'André',
+            'passos': 'Luis'
+        };
+
+        // Dados das cidades com informações completas: Adicionados motoristas
+        const citiesData = {
+            'santa-juliana': { 
+                name: 'Santa Juliana', 
+                coord: [-19.3054, -47.5321], 
+                type: 'base', 
+                routes: ['santa-juliana'],
+                driver: 'Baru'
+            },
+            'conceicao-alagoas': { name: 'Conceição', coord: [-19.9173, -48.2039], type: 'destination', routes: ['santa-juliana'] },
+            'sacramento': { name: 'Sacramento', coord: [-19.8622, -47.4508], type: 'destination', routes: ['santa-juliana'] },
+            'uberaba': { name: 'Uberaba', coord: [-19.7472, -47.9381], type: 'destination', routes: ['santa-juliana', 'ibia'] },
+            'ibia': { 
+                name: 'Ibiá', 
+                coord: [-19.4742, -46.5451], 
+                type: 'base', 
+                routes: ['ibia'],
+                driver: 'Diego'
+            },
+            'campos-altos': { name: 'Campos Altos', coord: [-19.6967, -46.1726], type: 'destination', routes: ['ibia'] },
+            'araxa': { name: 'Araxá', coord: [-19.5902, -46.9438], type: 'destination', routes: ['ibia'] },
+            'patos-minas': { 
+                name: 'Patos de Minas', 
+                coord: [-18.5783, -46.5184], 
+                type: 'base', 
+                routes: ['patos'],
+                driver: 'André'
+            },
+            'irai-minas': { name: 'Iraí de Minas', coord: [-19.0833, -47.4667], type: 'destination', routes: ['patos'] },
+            'sao-gotardo': { name: 'São Gotardo', coord: [-19.3119, -46.0461], type: 'destination', routes: ['patos'] },
+            'coromandel': { name: 'Coromandel', coord: [-18.4733, -47.1937], type: 'destination', routes: ['patos'] },
+            'patrocinio': { name: 'Patrocínio', coord: [-18.9439, -46.9934], type: 'destination', routes: ['patos'] },
+            'passos': { 
+                name: 'Passos', 
+                coord: [-20.7185, -46.6097], 
+                type: 'base', 
+                routes: ['passos'],
+                driver: 'Luis'
+            },
+            'carmo-rio-claro': { name: 'Carmo do Rio Claro', coord: [-20.9739, -46.1148], type: 'destination', routes: ['passos'] },
+            'piumhi': { name: 'Piumhi', coord: [-20.4766, -45.9587], type: 'destination', routes: ['passos'] },
+            'bambui': { name: 'Bambuí', coord: [-20.0166, -45.9751], type: 'destination', routes: ['passos'] }
+        };
+
+        // Dados das rotas organizadas: Adicionados motoristas
+        const routesData = {
+            'santa-juliana': {
+                name: 'Santa Juliana',
+                color: routeColors['santa-juliana'],
+                cities: ['santa-juliana', 'conceicao-alagoas', 'sacramento', 'uberaba'],
+                driver: 'Baru'
+            },
+            'ibia': {
+                name: 'Ibiá',
+                color: routeColors['ibia'],
+                cities: ['ibia', 'campos-altos', 'araxa', 'uberaba'],
+                driver: 'Diego'
+            },
+            'patos': {
+                name: 'Patos de Minas',
+                color: routeColors['patos'],
+                cities: ['patos-minas', 'irai-minas', 'sao-gotardo', 'coromandel', 'patrocinio'],
+                driver: 'André'
+            },
+            'passos': {
+                name: 'Passos',
+                color: routeColors['passos'],
+                cities: ['passos', 'carmo-rio-claro', 'piumhi', 'bambui'],
+                driver: 'Luis'
+            }
+        };
+
+        let routeLayers = {};
+        let markers = {};
+        let cityLabels = {};
+        let routesVisible = true;
+        let manualMode = false;
+        let selectedOrigin = null;
+        let manualRouteCount = 0;
+        let manualRoutes = [];
+        let routingControls = [];
+
+        // Função para alternar tema
+        function toggleTheme() {
+            isDarkTheme = !isDarkTheme;
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (isDarkTheme) {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                
+                // Trocar para tile escuro
+                map.removeLayer(tileLayer);
+                tileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '© OpenStreetMap contributors, © CARTO',
+                    maxZoom: 18
+                }).addTo(map);
+            } else {
+                body.setAttribute('data-theme', 'light');
+                themeIcon.className = 'fas fa-moon';
+                
+                // Voltar para tile claro
+                map.removeLayer(tileLayer);
+                tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors',
+                    maxZoom: 18
+                }).addTo(map);
+            }
+        }
+
+        // Função para calcular distância aproximada
+        function calculateDistance(coord1, coord2) {
+            const R = 6371;
+            const dLat = (coord2[0] - coord1[0]) * Math.PI / 180;
+            const dLon = (coord2[1] - coord1[1]) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(coord1[0] * Math.PI / 180) * Math.cos(coord2[0] * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return Math.round(R * c);
+        }
+
+        // Função para encontrar filiais no caminho
+        function findBranchesOnRoute(originKey, destinationKey) {
+            const origin = citiesData[originKey];
+            const destination = citiesData[destinationKey];
+            const branches = [];
+            
+            // Calcular distância total da rota
+            const totalDistance = calculateDistance(origin.coord, destination.coord);
+            
+            // Verificar todas as cidades para encontrar as que estão no caminho
+            Object.keys(citiesData).forEach(cityKey => {
+                if (cityKey === originKey || cityKey === destinationKey) return;
+                
+                const city = citiesData[cityKey];
+                const distanceFromOrigin = calculateDistance(origin.coord, city.coord);
+                const distanceToDestination = calculateDistance(city.coord, destination.coord);
+                
+                // Se a soma das distâncias for aproximadamente igual à distância total,
+                // a cidade está no caminho (com margem de erro de 30km)
+                if (Math.abs((distanceFromOrigin + distanceToDestination) - totalDistance) <= 30) {
+                    branches.push({
+                        key: cityKey,
+                        name: city.name,
+                        type: city.type,
+                        distanceFromOrigin: distanceFromOrigin,
+                        distanceToDestination: distanceToDestination,
+                        driver: city.driver || null
+                    });
+                }
+            });
+            
+            // Ordenar por distância da origem
+            branches.sort((a, b) => a.distanceFromOrigin - b.distanceFromOrigin);
+            
+            return branches;
+        }
+
+        // Função para exibir sugestões de filiais
+        function showBranchSuggestions(originKey, destinationKey) {
+            const branches = findBranchesOnRoute(originKey, destinationKey);
+            const branchSuggestions = document.getElementById('branchSuggestions');
+            const branchList = document.getElementById('branchList');
+            
+            if (branches.length > 0) {
+                let branchHtml = '<div style="margin-bottom: 8px;"><strong>IDA:</strong></div>';
+                branches.forEach(branch => {
+                    const driverInfo = branch.driver ? ` - ${branch.driver}` : '';
+                    branchHtml += `
+                        <div class="branch-item">
+                            <span>${branch.name} ${branch.type === 'base' ? '(Base)' : ''}${driverInfo}</span>
+                            <span class="branch-distance">${branch.distanceFromOrigin}km</span>
+                        </div>
+                    `;
+                });
+                
+                branchHtml += '<div style="margin: 12px 0 8px 0;"><strong>VOLTA:</strong></div>';
+                branches.slice().reverse().forEach(branch => {
+                    const driverInfo = branch.driver ? ` - ${branch.driver}` : '';
+                    branchHtml += `
+                        <div class="branch-item">
+                            <span>${branch.name} ${branch.type === 'base' ? '(Base)' : ''}${driverInfo}</span>
+                            <span class="branch-distance">${branch.distanceToDestination}km</span>
+                        </div>
+                    `;
+                });
+                
+                branchList.innerHTML = branchHtml;
+                branchSuggestions.style.display = 'block';
+            } else {
+                branchSuggestions.style.display = 'none';
+            }
+        }
+
+        // Função para criar ícone customizado
+        function createCustomIcon(color, isBase = false) {
+            const iconHtml = isBase ? 
+                `<i class="fas fa-truck" style="color: ${color}; font-size: 16px;"></i>` :
+                `<i class="fas fa-building" style="color: ${color}; font-size: 14px;"></i>`;
+            
+            return L.divIcon({
+                html: `<div class="custom-marker" style="width: 35px; height: 35px;">${iconHtml}</div>`,
+                className: 'custom-marker-container',
+                iconSize: [35, 35],
+                iconAnchor: [17.5, 17.5]
+            });
+        }
+
+        // Função para criar label da cidade
+        function createCityLabel(cityKey, cityData) {
+            return L.marker(cityData.coord, {
+                icon: L.divIcon({
+                    html: `<div class="city-label">${cityData.name}</div>`,
+                    className: 'city-label-container',
+                    iconSize: [0, 0],
+                    iconAnchor: [0, 0]
+                })
+            });
+        }
+
+        // Função para criar popup personalizado
+        function createPopupContent(cityData) {
+            let content = `
+                <div class="popup-content">
+                    <div class="popup-title">${cityData.name}</div>
+            `;
+            
+            if (cityData.driver) {
+                content += `<div class="popup-driver">👨‍💼 Motorista: ${cityData.driver}</div>`;
+            }
+            
+            return content;
+        }
+
+        // Função para criar marcadores
+        function createAllMarkers() {
+            Object.keys(citiesData).forEach(cityKey => {
+                const cityData = citiesData[cityKey];
+                const routeKey = cityData.routes[0];
+                const color = routeColors[routeKey] || '#95a5a6';
+                const isBase = cityData.type === 'base';
+                
+                const marker = L.marker(cityData.coord, {
+                    icon: createCustomIcon(color, isBase)
+                }).on('click', function() {
+                    handleMarkerClick(cityKey, cityData);
+                });
+                
+                // Adicionar popup com informações da cidade e motorista
+                marker.bindPopup(createPopupContent(cityData));
+                
+                const label = createCityLabel(cityKey, cityData);
+                
+                markers[cityKey] = marker;
+                cityLabels[cityKey] = label;
+                marker.addTo(map);
+                label.addTo(map);
+            });
+        }
+
+        function handleMarkerClick(cityKey, cityData) {
+            // Criar conteúdo do popup com animação
+            const driverInfo = cityData.driver ? `<div class="popup-driver">Motorista: ${cityData.driver}</div>` : '';
+            const typeText = cityData.type === 'base' ? 'Base Operacional' : 'Filial';
+            
+            const popupContent = `
+                <div class="popup-content">
+                    <div class="popup-title">${cityData.name}</div>
+                    ${driverInfo}
+                    <div class="popup-type">${typeText}</div>
+                </div>
+            `;
+            
+            const popup = L.popup()
+                .setLatLng(cityData.coord)
+                .setContent(popupContent)
+                .openOn(map);
+            
+            // Fechar popup automaticamente após 4 segundos
+            setTimeout(() => {
+                map.closePopup(popup);
+            }, 4000);
+            
+            if (!selectedOrigin) {
+                selectedOrigin = { key: cityKey, data: cityData };
+                document.getElementById('originSelect').value = cityKey;
+                markers[cityKey].setIcon(createCustomIcon('#f39c12', cityData.type === 'base'));
+            } else if (selectedOrigin.key !== cityKey) {
+                document.getElementById('destinationSelect').value = cityKey;
+                createManualRoute();
+            }
+        }
+
+        // Função para criar rota usando Leaflet Routing Machine
+        function createRoute(routeKey, routeData) {
+            const waypoints = routeData.cities.map(cityKey => {
+                const city = citiesData[cityKey];
+                return L.latLng(city.coord);
+            });
+
+            const routingControl = L.Routing.control({
+                waypoints: waypoints,
+                routeWhileDragging: false,
+                addWaypoints: false,
+                createMarker: function() { return null; },
+                lineOptions: {
+                    styles: [{
+                        color: routeData.color,
+                        weight: 4,
+                        opacity: 0.8
+                    }]
+                },
+                show: true,
+                collapsible: true,
+                router: L.Routing.osrmv1({
+                    serviceUrl: 'https://router.project-osrm.org/route/v1'
+                })
+            });
+
+            return routingControl;
+        }
+
+        // Função para criar rota manual
+        function createManualRoute() {
+            const originKey = document.getElementById('originSelect').value;
+            const destinationKey = document.getElementById('destinationSelect').value;
+            
+            if (!originKey || !destinationKey || originKey === destinationKey) {
+                alert('Selecione origem e destino diferentes');
+                return;
+            }
+            
+            const originData = citiesData[originKey];
+            const destinationData = citiesData[destinationKey];
+            
+            const routingControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(originData.coord),
+                    L.latLng(destinationData.coord)
+                ],
+                routeWhileDragging: false,
+                addWaypoints: false,
+                createMarker: function() { return null; },
+                lineOptions: {
+                    styles: [{
+                        color: routeColors.manual,
+                        weight: 5,
+                        opacity: 0.9,
+                        dashArray: '10, 10'
+                    }]
+                },
+                show: true,
+                collapsible: true,
+                router: L.Routing.osrmv1({
+                    serviceUrl: 'https://router.project-osrm.org/route/v1'
+                })
+            }).addTo(map);
+
+            routingControls.push(routingControl);
+            
+            // Adicionar à lista de rotas manuais
+            manualRoutes.push({
+                id: ++manualRouteCount,
+                origin: originData.name,
+                destination: destinationData.name,
+                distance: calculateDistance(originData.coord, destinationData.coord),
+                originDriver: originData.driver || null,
+                destinationDriver: destinationData.driver || null
+            });
+
+            clearSelection();
+        }
+
+        function clearSelection() {
+            if (selectedOrigin) {
+                const cityData = citiesData[selectedOrigin.key];
+                const routeKey = cityData.routes[0];
+                const color = routeColors[routeKey] || '#95a5a6';
+                markers[selectedOrigin.key].setIcon(createCustomIcon(color, cityData.type === 'base'));
+                selectedOrigin = null;
+            }
+            
+            document.getElementById('originSelect').value = '';
+            document.getElementById('destinationSelect').value = '';
+            document.getElementById('createRouteBtn').disabled = true;
+            document.getElementById('branchSuggestions').style.display = 'none';
+        }
+
+        // Função para popular selects
+        function populateSelects() {
+            const originSelect = document.getElementById('originSelect');
+            const destinationSelect = document.getElementById('destinationSelect');
+            
+            Object.keys(citiesData).forEach(cityKey => {
+                const cityData = citiesData[cityKey];
+                const driverInfo = cityData.driver ? ` (${cityData.driver})` : '';
+                const optionText = cityData.name + driverInfo;
+                
+                const option1 = new Option(optionText, cityKey);
+                const option2 = new Option(optionText, cityKey);
+                
+                originSelect.add(option1);
+                destinationSelect.add(option2);
+            });
+            
+            // Eventos para habilitar botão
+            [originSelect, destinationSelect].forEach(select => {
+                select.addEventListener('change', function() {
+                    const origin = document.getElementById('originSelect').value;
+                    const destination = document.getElementById('destinationSelect').value;
+                    document.getElementById('createRouteBtn').disabled = !origin || !destination || origin === destination;
+                    
+                    // Mostrar sugestões se ambos estiverem selecionados
+                    if (origin && destination && origin !== destination) {
+                        showBranchSuggestions(origin, destination);
+                    } else {
+                        document.getElementById('branchSuggestions').style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Controles
+        function toggleAllRoutes() {
+            routesVisible = !routesVisible;
+            Object.values(routeLayers).forEach(layer => {
+                if (routesVisible) {
+                    layer.addTo(map);
+                } else {
+                    map.removeControl(layer);
+                }
+            });
+        }
+
+        function toggleManualMode() {
+            manualMode = !manualMode;
+            const manualControls = document.getElementById('manualControls');
+            const manualBtn = document.getElementById('manualBtn');
+            
+            if (manualMode) {
+                manualControls.classList.add('active');
+                manualBtn.classList.add('active');
+            } else {
+                manualControls.classList.remove('active');
+                manualBtn.classList.remove('active');
+                clearSelection();
+            }
+        }
+
+        function clearManualRoute() {
+            routingControls.forEach(control => {
+                map.removeControl(control);
+            });
+            routingControls = [];
+            manualRoutes = [];
+            manualRouteCount = 0;
+            clearSelection();
+        }
+
+        function centerMap() {
+            const allCoords = Object.values(citiesData).map(city => city.coord);
+            const group = new L.featureGroup(allCoords.map(coord => L.marker(coord)));
+            map.fitBounds(group.getBounds().pad(0.1));
+        }
+
+        function exportRoutes() {
+            const data = {
+                company: 'HortSoy - Logística',
+                bases: Object.keys(citiesData).filter(key => citiesData[key].type === 'base').map(key => ({
+                    name: citiesData[key].name,
+                    driver: citiesData[key].driver
+                })),
+                drivers: driversData,
+                routes: routesData,
+                manualRoutes: manualRoutes.map(route => ({
+                    origin: route.origin,
+                    destination: route.destination,
+                    distance: route.distance,
+                    originDriver: route.originDriver,
+                    destinationDriver: route.destinationDriver
+                }))
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'hortsoy_logistics_routes_with_drivers.json';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Inicializar mapa
+        function initializeMap() {
+            // Criar rotas principais
+            Object.keys(routesData).forEach(routeKey => {
+                const routeLayer = createRoute(routeKey, routesData[routeKey]);
+                routeLayers[routeKey] = routeLayer;
+                // Rotas só serão adicionadas ao mapa quando solicitadas
+                // routeLayer.addTo(map);
+            });
+            
+            // Criar marcadores
+            createAllMarkers();
+            
+            // Popular selects
+            populateSelects();
+            
+            // Centralizar mapa
+            centerMap();
+        }
+
+        // Eventos da legenda
+        document.querySelectorAll('.legend-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const route = this.dataset.route;
+                
+                if (route === 'manual') {
+                    toggleManualMode();
+                } else if (route && routeLayers[route]) {
+                    if (map.hasLayer(routeLayers[route])) {
+                        map.removeControl(routeLayers[route]);
+                    } else {
+                        routeLayers[route].addTo(map);
+                    }
+                }
+            });
+        });
+
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMap();
+        });
+    </script>
+</body>
+</html>
+
