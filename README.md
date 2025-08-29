@@ -1,6 +1,6 @@
 # 🗺️ HortSoy - Mapa de Filiais
 
-Este projeto é um sistema interativo de visualização de rotas das filiais da **HortSoy - Logística e Distribuição**.
+Este projeto das filiais da **HortSoy**.
 
 ## 📌 Funcionalidades
 
