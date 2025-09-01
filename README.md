@@ -14,7 +14,7 @@ Este projeto conta com todas as filiais da **HortSoy**.
 - Santa Juliana (Baru)
 - Ibiá (Diego)
 - Patos de Minas (André)
-- Passos (Luis)
+- Passos (Luiz)
 
 ## 🛠️ Tecnologias Utilizadas
 
