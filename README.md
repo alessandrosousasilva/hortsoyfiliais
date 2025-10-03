@@ -1,11 +1,11 @@
-# 🗺️ HORTSOY - Mapa de Filiais
+# 🗺️ HORTSOY - Mapa das Filiais
 
 Este projeto conta com todas as filiais da **HortSoy**.
 
 ## 📌 Funcionalidades
 
 - Visualização no mapa das cidades com filiais da companhia 
-- Roteamento onde tem caminhão 🚛 
+- Onde tem caminhão 🚛 
 - Modo claro/escuro
 - Criação de rotas manuais, com sugestão de filiais no caminho
 
@@ -18,4 +18,4 @@ Este projeto conta com todas as filiais da **HortSoy**.
 
 ## 🛠️ Tecnologias Utilizadas
 
-- HTML, CSS e JavaScript
+- HTML, CSS e JS
