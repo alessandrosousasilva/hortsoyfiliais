@@ -146,8 +146,8 @@
         }
         
         .company-logo {
-            height: 20px;
-            width: 15px;
+            height: 50px;
+            width: auto;
             transition: all 0.3s ease;
             animation: fadeIn 1.2s ease-out;
             display: block;
