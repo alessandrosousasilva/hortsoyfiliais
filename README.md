@@ -1,6 +1,6 @@
 # 🗺️ HORTSOY - Mapa das Filiais
 
-Este projeto conta com todas as filiais da **HortSoy**.
+Este projeto conta com todas as unidades da **HortSoy**.
 
 ## 📌 Funcionalidades
 
@@ -14,7 +14,7 @@ Este projeto conta com todas as filiais da **HortSoy**.
 - Santa Juliana (Baru)
 - Ibiá (Diego)
 - Patos de Minas (André)
-- Passos (Luiz)
+- Passos (André)
 
 ## 🛠️ Tecnologias Utilizadas
 
