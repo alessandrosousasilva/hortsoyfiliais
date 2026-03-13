@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hortsoy | Mapa de Filiais</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1>
+                <img src="logo-hortsoy.png" alt="HortSoy Logo" class="company-logo">
+            </h1>
+        </div>
+
+        <div class="search-container">
+            <div class="search-wrapper">
+                <i data-lucide="search"></i>
+                <input type="text" id="filter" class="search-input" placeholder="Pesquisar filial...">
+            </div>
+        </div>
+
+        <div class="units-list" id="units-list">
+        </div>
+    </aside>
+
+    <main id="map">
+    </main>
+
+    <script>
+        // 1. DADOS DAS UNIDADES.
+        // Para precisão exata de coordenadas.
+        const unidades = [
+            { nome: "SANTA JULIANA", endereco: "AV. JOAQUIM HONORIO DA SILVA, 20", link: "https://maps.app.goo.gl/4M9MvdKPrLpbiegs5", lat: -19.3082, lng: -47.5255, icone: 'orange' },
+            { nome: "PATROCÍNIO", endereco: "AV. FARIA PEREIRA, 4677", link: "https://maps.app.goo.gl/fFhios9dDTEe1Wwd8", lat: -18.9371, lng: -46.9928, icone: 'orange' },
+            { nome: "IBIÁ", endereco: "AV. BARTOLOMEU RIBEIRO DE PAIVA, 934", link: "https://maps.app.goo.gl/bH4tTTLZPDqEQ3yx8", lat: -19.4783, lng: -46.5386, icone: 'orange' },
+            { nome: "ARAXÁ", endereco: "AV. JOSE ANANIAS AGUIAR, 5835", link: "https://maps.app.goo.gl/jyxtBeDQN77QFJgi9", lat: -19.5912, lng: -46.9419, icone: 'orange' },
+            { nome: "SÃO GOTARDO", endereco: "ROD. MG 235, 590 KM 88", link: "https://maps.app.goo.gl/DzJVgHy9Hn5GhFxR8", lat: -19.3089, lng: -46.0489, icone: 'orange' },
+            { nome: "IRAÍ DE MINAS", endereco: "AV. SETE DE SETEMBRO, 285", link: "https://maps.app.goo.gl/XsR3rL4tbc8ddQkc9", lat: -18.9856, lng: -47.4611, icone: 'orange' },
+            { nome: "PATOS DE MINAS", endereco: "AV. PRESIDENTE TANCREDO NEVES, 540", link: "https://maps.app.goo.gl/6iEMCYAjG8WmN2um9", lat: -18.5791, lng: -46.5181, icone: 'orange' },
+            { nome: "COROMANDEL", endereco: "AV. GOVERNADOR ISRAEL PINHEIRO, 691", link: "https://maps.app.goo.gl/uLiejz5g2PWbLsmy6", lat: -18.4733, lng: -47.1983, icone: 'orange' },
+            { nome: "UBERABA", endereco: "AV. DEP. JOSE MARCUS CHEREM, 1020", link: "https://maps.app.goo.gl/X86d192AibphuJ1a6", lat: -19.7476, lng: -47.9397, icone: 'orange' }, // Usando azul padrão
+            { nome: "PASSOS", endereco: "ROD. MG - 050, 628", link: "https://maps.app.goo.gl/jfV4bCUmtXbEnFar9", lat: -20.7233, lng: -46.6111, icone: 'orange' },
+            { nome: "CARMO RIO CLARO", endereco: "RUA PADRE PENTEADO, 15", link: "https://maps.app.goo.gl/woF4xVQtqCUPomfw9", lat: -20.9733, lng: -46.1111, icone: 'orange' },
+            { nome: "PIUMHI", endereco: "RUA PADRE ABEL, 1396", link: "https://maps.app.goo.gl/S1g5TkkesmQRLTJC7", lat: -20.4633, lng: -45.9611, icone: 'orange' },
+            { nome: "BAMBUÍ", endereco: "RUA ALZIRA TORRES, 681", link: "https://maps.app.goo.gl/a9BcQQsscCR7VptF6", lat: -20.0033, lng: -45.9711, icone: 'orange' },
+            { nome: "CONCEIÇÃO DAS ALAGOAS", endereco: "AV. JOAO MARQUES DE OLIVEIRA, 527", link: "https://maps.app.goo.gl/Y1KbwHgJAwynPrJt9", lat: -19.9133, lng: -48.3811, icone: 'orange' },
+            { nome: "SACRAMENTO", endereco: "RUA MARIO DE SANTI, 280", link: "https://maps.app.goo.gl/wvqYYikGG1nqZBHm6", lat: -19.8633, lng: -47.4411, icone: 'orange' }
+        ];
+
+        // 2. CONFIGURAÇÃO DOS ÍCONES PERSONALIZADOS
+        const createIcon = (nome, color) => L.divIcon({
+            className: 'custom-div-icon',
+            html: `
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <img src="marker-${color}.png" style="width: 40px; height: 40px;">
+                <span style="
+                    background-color: var(--card-bg);
+                    color: var(--hortsoy-accent);
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    font-size: 11px;
+                    font-weight: bold;
+                    border: 1px solid var(--hortsoy-green);
+                    white-space: nowrap;
+                    margin-top: -2px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+                ">${nome}</span>
+            </div>
+        `,
+            iconSize: [40, 55], // Aumentado para acomodar o texto abaixo
+            iconAnchor: [20, 40], // Ajustado para a ponta do pino
+            popupAnchor: [0, -40]
+        });
+
+        // 3. INICIALIZAÇÃO DO MAPA (LEAFLET)
+        // Centralizado na região de Araxá
+        const map = L.map('map').setView([-19.70, -47.00], 8);
+
+        // Adiciona a camada do mapa (OpenStreetMap é gratuito e limpo)
+        // Usar o MapBox para um visual mais 'dark' se tiver uma chave de API.
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <OpenStreetMap> contributors'
+        }).addTo(map);
+
+        const markersGroup = L.layerGroup().addTo(map);
+
+        // 4. FUNÇÕES DE RENDERIZAÇÃO E FILTRO
+        const listElement = document.getElementById('units-list');
+        const filterInput = document.getElementById('filter');
+
+        function render() {
+            listElement.innerHTML = '';
+            markersGroup.clearLayers();
+
+            const term = filterInput.value.toLowerCase();
+            const filtered = unidades.filter(u => u.nome.toLowerCase().includes(term) || u.endereco.toLowerCase().includes(term));
+
+            filtered.forEach(u => {
+                // A) Lista Lateral
+                const item = document.createElement('a');
+                item.className = 'unit-item';
+                item.href = u.link;
+                item.target = '_blank';
+                item.innerHTML = `<h3>${u.nome}</h3><p>${u.endereco}</p>`;
+
+                item.onmouseover = () => {
+                    map.flyTo([u.lat, u.lng], 10);
+                    markers[u.nome].openPopup();
+                };
+
+                listElement.appendChild(item);
+
+                // B) Marcador no Mapa com Nome Visível
+                const markerIcon = createIcon(u.nome, u.icone || 'orange');
+                const marker = L.marker([u.lat, u.lng], { icon: markerIcon }).addTo(markersGroup);
+
+                const popupContent = `
+                <div style="color: white;">
+                    <h3 style="margin:0; color:var(--hortsoy-accent);">${u.nome}</h3>
+                    <p style="margin:5px 0; font-size:12px;">${u.endereco}</p>
+                    <a href="${u.link}" target="_blank" class="btn-maps-popup">Abrir no Google Maps</a>
+                </div>
+            `;
+                marker.bindPopup(popupContent);
+                markers[u.nome] = marker;
+            });
+            lucide.createIcons();
+        }
+
+        // Armazena referências dos marcadores para interação lista->mapa
+        const markers = {};
+
+        // Início
+        filterInput.addEventListener('input', render);
+        render();
+    </script>
+</body>
+
+</html>
