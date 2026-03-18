@@ -41,8 +41,8 @@ body {
 }
 /* Espaço para o Logo Hortsoy */
 .company-logo {
-  height: 95px;
-  width: 225px;
+  height: 75px;
+  width: 178px;
   align-items: center;
   flex-wrap: wrap;
   gap: 50px;
