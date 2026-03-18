@@ -54,23 +54,24 @@
     <script>
         // 1. DADOS DAS UNIDADES.
         // Para precisão exata de coordenadas.
-        const unidades = [
-            { nome: "ADM", endereco: "AV. SANTOS DUMONT, 130", link: "https://maps.app.goo.gl/fyeeoFGsbZKB9XEu6", lat: -19.74674029577659, lng: -47.93915410279788, icone: 'orange' },
-            { nome: "SANTA JULIANA", endereco: "AV. JOAQUIM HONORIO DA SILVA, 20", link: "https://maps.app.goo.gl/4M9MvdKPrLpbiegs5", lat: -19.309723882362004, lng: -47.53408813068095, icone: 'orange' },
-            { nome: "PATROCÍNIO", endereco: "AV. FARIA PEREIRA, 4677", link: "https://maps.app.goo.gl/fFhios9dDTEe1Wwd8", lat: -18.94758276124383, lng: -47.01414452883512, icone: 'orange' },
-            { nome: "IBIÁ", endereco: "AV. BARTOLOMEU RIBEIRO DE PAIVA, 934", link: "https://maps.app.goo.gl/bH4tTTLZPDqEQ3yx8", lat: -19.501366202940318, lng: -46.5500492, icone: 'orange' },
-            { nome: "ARAXÁ", endereco: "AV. JOSE ANANIAS AGUIAR, 5835", link: "https://maps.app.goo.gl/jyxtBeDQN77QFJgi9", lat: -19.575693180359735, lng: -46.954577357670225, icone: 'orange' },
-            { nome: "SÃO GOTARDO", endereco: "ROD. MG 235, 590 KM 88", link: "https://maps.app.goo.gl/DzJVgHy9Hn5GhFxR8", lat: -19.353443401392177, lng: -46.130930584407984, icone: 'orange' },
-            { nome: "IRAÍ DE MINAS", endereco: "AV. SETE DE SETEMBRO, 285", link: "https://maps.app.goo.gl/XsR3rL4tbc8ddQkc9", lat: -18.987639853586494, lng: -47.4699099962926, icone: 'orange' },
-            { nome: "PATOS DE MINAS", endereco: "AV. PRESIDENTE TANCREDO NEVES, 540", link: "https://maps.app.goo.gl/6iEMCYAjG8WmN2um9", lat: -18.6206581049706121, lng: -46.5117439, icone: 'orange' },
-            { nome: "COROMANDEL", endereco: "AV. GOVERNADOR ISRAEL PINHEIRO, 691", link: "https://maps.app.goo.gl/uLiejz5g2PWbLsmy6", lat: -18.483346130629013, lng: -47.202062399999996, icone: 'orange' },
-            { nome: "UBERABA", endereco: "AV. DEP. JOSE MARCUS CHEREM, 1020", link: "https://maps.app.goo.gl/X86d192AibphuJ1a6", lat: -19.773565592758338, lng: -47.93589340970933, icone: 'orange' }, // Usando azul padrão
-            { nome: "PASSOS", endereco: "ROD. MG - 050, 628", link: "https://maps.app.goo.gl/jfV4bCUmtXbEnFar9", lat: -20.73928087976301, lng: -46.59562507116487, icone: 'orange' },
-            { nome: "CARMO RIO CLARO", endereco: "RUA PADRE PENTEADO, 15", link: "https://maps.app.goo.gl/woF4xVQtqCUPomfw9", lat: -20.970523827095946, lng: -46.130458600000004, icone: 'orange' },
-            { nome: "PIUMHI", endereco: "RUA PADRE ABEL, 1396", link: "https://maps.app.goo.gl/S1g5TkkesmQRLTJC7", lat: -20.46166500023169, lng: -45.968429945872074, icone: 'orange' },
-            { nome: "BAMBUÍ", endereco: "RUA ALZIRA TORRES, 681", link: "https://maps.app.goo.gl/a9BcQQsscCR7VptF6", lat: -20.017331749704148, lng: -45.9855067, icone: 'orange' },
-            { nome: "CONCEIÇÃO DAS ALAGOAS", endereco: "AV. JOAO MARQUES DE OLIVEIRA, 527", link: "https://maps.app.goo.gl/Y1KbwHgJAwynPrJt9", lat: -19.93211132022286, lng: -48.377358, icone: 'orange' },
-            { nome: "SACRAMENTO", endereco: "RUA MARIO DE SANTI, 280", link: "https://maps.app.goo.gl/wvqYYikGG1nqZBHm6", lat: -19.872176921154335, lng: -47.43103069814453, icone: 'orange' }
+                const unidades = [
+            { nome: "ADM", endereco: "AV. SANTOS DUMONT, 130", link: "https://maps.app.goo.gl/fyeeoFGsbZKB9XEu6", lat: -19.74674029577659, lng: -47.93915410279788, icone: 'green' },
+
+            { nome: "SANTA JULIANA", endereco: "AV. JOAQUIM HONORIO DA SILVA, 20", link: "https://maps.app.goo.gl/4M9MvdKPrLpbiegs5", lat: -19.3082, lng: -47.5255, icone: 'green' },
+            { nome: "PATROCÍNIO", endereco: "AV. FARIA PEREIRA, 4677", link: "https://maps.app.goo.gl/fFhios9dDTEe1Wwd8", lat: -18.9371, lng: -46.9928, icone: 'green' },
+            { nome: "IBIÁ", endereco: "AV. BARTOLOMEU RIBEIRO DE PAIVA, 934", link: "https://maps.app.goo.gl/bH4tTTLZPDqEQ3yx8", lat: -19.4783, lng: -46.5386, icone: 'green' },
+            { nome: "ARAXÁ", endereco: "AV. JOSE ANANIAS AGUIAR, 5835", link: "https://maps.app.goo.gl/jyxtBeDQN77QFJgi9", lat: -19.5912, lng: -46.9419, icone: 'green' },
+            { nome: "SÃO GOTARDO", endereco: "ROD. MG 235, 590 KM 88", link: "https://maps.app.goo.gl/DzJVgHy9Hn5GhFxR8", lat: -19.3089, lng: -46.0489, icone: 'green' },
+            { nome: "IRAÍ DE MINAS", endereco: "AV. SETE DE SETEMBRO, 285", link: "https://maps.app.goo.gl/XsR3rL4tbc8ddQkc9", lat: -18.9856, lng: -47.4611, icone: 'green' },
+            { nome: "PATOS DE MINAS", endereco: "AV. PRESIDENTE TANCREDO NEVES, 540", link: "https://maps.app.goo.gl/6iEMCYAjG8WmN2um9", lat: -18.5791, lng: -46.5181, icone: 'green' },
+            { nome: "COROMANDEL", endereco: "AV. GOVERNADOR ISRAEL PINHEIRO, 691", link: "https://maps.app.goo.gl/uLiejz5g2PWbLsmy6", lat: -18.4733, lng: -47.1983, icone: 'green' },
+            { nome: "UBERABA", endereco: "AV. DEP. JOSE MARCUS CHEREM, 1020", link: "https://maps.app.goo.gl/X86d192AibphuJ1a6", lat: -19.77358197630411, lng: -47.93541854297221, icone: 'green' }, // Usando azul padrão
+            { nome: "PASSOS", endereco: "ROD. MG - 050, 628", link: "https://maps.app.goo.gl/jfV4bCUmtXbEnFar9", lat: -20.7233, lng: -46.6111, icone: 'green' },
+            { nome: "CARMO RIO CLARO", endereco: "RUA PADRE PENTEADO, 15", link: "https://maps.app.goo.gl/woF4xVQtqCUPomfw9", lat: -20.9733, lng: -46.1111, icone: 'green' },
+            { nome: "PIUMHI", endereco: "RUA PADRE ABEL, 1396", link: "https://maps.app.goo.gl/S1g5TkkesmQRLTJC7", lat: -20.4633, lng: -45.9611, icone: 'green' },
+            { nome: "BAMBUÍ", endereco: "RUA ALZIRA TORRES, 681", link: "https://maps.app.goo.gl/a9BcQQsscCR7VptF6", lat: -20.0033, lng: -45.9711, icone: 'green' },
+            { nome: "CONCEIÇÃO DAS ALAGOAS", endereco: "AV. JOAO MARQUES DE OLIVEIRA, 527", link: "https://maps.app.goo.gl/Y1KbwHgJAwynPrJt9", lat: -19.9133, lng: -48.3811, icone: 'green' },
+            { nome: "SACRAMENTO", endereco: "RUA MARIO DE SANTI, 280", link: "https://maps.app.goo.gl/wvqYYikGG1nqZBHm6", lat: -19.8633, lng: -47.4411, icone: 'green' }
         ];
 
         // 2. CONFIGURAÇÃO DOS ÍCONES PERSONALIZADOS
