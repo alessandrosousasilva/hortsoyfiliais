@@ -1,7 +1,7 @@
 :root {
-  /* Cores Dark Modernas conforme os logos Hortsoy */
+  /* Cores Dark */
   --hortsoy-green: #2e7d32;
-  --hortsoy-accent: #ffffff; /* Laranja/Amarelo */
+  --hortsoy-accent: #ffffff; /* Cor unidades barra lateral */
   --bg-dark: #000000; /* Fundo principal */
   --sidebar-bg: #000000; /* Fundo lateral */
   --card-bg: #272727; /* Fundo dos cards na lateral */
@@ -39,7 +39,7 @@ body {
   padding: 30px 25px;
   text-align: center;
 }
-/* Espaço para o Logo Hortsoy */
+/* Espaço para o Logo */
 .company-logo {
   height: 75px;
   width: 178px;
