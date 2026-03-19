@@ -31,8 +31,7 @@
             </div>
         </div>
 
-        <div class="units-list" id="units-list">
-        </div>
+        <div class="units-list" id="units-list"></div>
     </aside>
 
     <div id="music-player">
@@ -48,15 +47,21 @@
         <audio id="audio-element"></audio>
     </div>
 
-    <main id="map">
-    </main>
+    <main id="map"></main>
+
+    <div id="modal-unidade" class="modal-container">
+        <div class="modal-content">
+            <span class="close-modal" onclick="fecharModal()">&times;</span>
+            <h2 id="modal-titulo" style="color: var(--hortsoy-accent); margin: 0;">Unidade</h2>
+            <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
+            <div id="galeria-fotos" class="galeria-grid"></div>
+        </div>
+    </div>
 
     <script>
-        // 1. DADOS DAS UNIDADES.
-        // Para precisão exata de coordenadas.
-                const unidades = [
-            { nome: "ADM", endereco: "AV. SANTOS DUMONT, 130", link: "https://maps.app.goo.gl/fyeeoFGsbZKB9XEu6", lat: -19.74674029577659, lng: -47.93915410279788, icone: 'green' },
-
+        // 1. DADOS DAS UNIDADES
+        const unidades = [
+            { nome: "ADM", endereco: "AV. SANTOS DUMONT, 130", link: "https://maps.app.goo.gl/fyeeoFGsbZKB9XEu6", lat: -19.7467, lng: -47.9391, icone: 'green' },
             { nome: "SANTA JULIANA", endereco: "AV. JOAQUIM HONORIO DA SILVA, 20", link: "https://maps.app.goo.gl/4M9MvdKPrLpbiegs5", lat: -19.3082, lng: -47.5255, icone: 'green' },
             { nome: "PATROCÍNIO", endereco: "AV. FARIA PEREIRA, 4677", link: "https://maps.app.goo.gl/fFhios9dDTEe1Wwd8", lat: -18.9371, lng: -46.9928, icone: 'green' },
             { nome: "IBIÁ", endereco: "AV. BARTOLOMEU RIBEIRO DE PAIVA, 934", link: "https://maps.app.goo.gl/bH4tTTLZPDqEQ3yx8", lat: -19.4783, lng: -46.5386, icone: 'green' },
@@ -65,7 +70,7 @@
             { nome: "IRAÍ DE MINAS", endereco: "AV. SETE DE SETEMBRO, 285", link: "https://maps.app.goo.gl/XsR3rL4tbc8ddQkc9", lat: -18.9856, lng: -47.4611, icone: 'green' },
             { nome: "PATOS DE MINAS", endereco: "AV. PRESIDENTE TANCREDO NEVES, 540", link: "https://maps.app.goo.gl/6iEMCYAjG8WmN2um9", lat: -18.5791, lng: -46.5181, icone: 'green' },
             { nome: "COROMANDEL", endereco: "AV. GOVERNADOR ISRAEL PINHEIRO, 691", link: "https://maps.app.goo.gl/uLiejz5g2PWbLsmy6", lat: -18.4733, lng: -47.1983, icone: 'green' },
-            { nome: "UBERABA", endereco: "AV. DEP. JOSE MARCUS CHEREM, 1020", link: "https://maps.app.goo.gl/X86d192AibphuJ1a6", lat: -19.77358197630411, lng: -47.93541854297221, icone: 'green' }, // Usando azul padrão
+            { nome: "UBERABA", endereco: "AV. DEP. JOSE MARCUS CHEREM, 1020", link: "https://maps.app.goo.gl/X86d192AibphuJ1a6", lat: -19.7735, lng: -47.9354, icone: 'green' },
             { nome: "PASSOS", endereco: "ROD. MG - 050, 628", link: "https://maps.app.goo.gl/jfV4bCUmtXbEnFar9", lat: -20.7233, lng: -46.6111, icone: 'green' },
             { nome: "CARMO RIO CLARO", endereco: "RUA PADRE PENTEADO, 15", link: "https://maps.app.goo.gl/woF4xVQtqCUPomfw9", lat: -20.9733, lng: -46.1111, icone: 'green' },
             { nome: "PIUMHI", endereco: "RUA PADRE ABEL, 1396", link: "https://maps.app.goo.gl/S1g5TkkesmQRLTJC7", lat: -20.4633, lng: -45.9611, icone: 'green' },
@@ -80,36 +85,21 @@
             html: `
             <div style="display: flex; flex-direction: column; align-items: center;">
                 <img src="marker-${color}.png" style="width: 40px; height: 40px;">
-                <span style="
-                    background-color: var(--card-bg);
-                    color: var(--hortsoy-accent);
-                    padding: 2px 6px;
-                    border-radius: 4px;
-                    font-size: 11px;
-                    font-weight: bold;
-                    border: 1px solid var(--hortsoy-green);
-                    white-space: nowrap;
-                    margin-top: -2px;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-                ">${nome}</span>
-            </div>
-        `,
-            iconSize: [40, 55], // Aumentado para acomodar o texto abaixo
-            iconAnchor: [20, 40], // Ajustado para a ponta do pino
+                <span style="background-color: var(--card-bg); color: var(--hortsoy-accent); padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; border: 1px solid var(--hortsoy-green); white-space: nowrap; margin-top: -2px; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">${nome}</span>
+            </div>`,
+            iconSize: [40, 55],
+            iconAnchor: [20, 40],
             popupAnchor: [0, -40]
         });
 
-        // 3. INICIALIZAÇÃO DO MAPA (LEAFLET)
-        // Centralizado na região de Araxá
+        // 3. INICIALIZAÇÃO DO MAPA
         const map = L.map('map').setView([-19.70, -47.00], 8);
-
-        // Adiciona a camada do mapa
-        // Usar o MapBox para um visual mais 'dark' com futura API
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <OpenStreetMap> contributors'
+            attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
         const markersGroup = L.layerGroup().addTo(map);
+        const markers = {};
 
         // 4. FUNÇÕES DE RENDERIZAÇÃO E FILTRO
         const listElement = document.getElementById('units-list');
@@ -123,45 +113,76 @@
             const filtered = unidades.filter(u => u.nome.toLowerCase().includes(term) || u.endereco.toLowerCase().includes(term));
 
             filtered.forEach(u => {
-                // A) Lista Lateral
-                const item = document.createElement('a');
+                // Lista Lateral
+                const item = document.createElement('div');
                 item.className = 'unit-item';
-                item.href = u.link;
-                item.target = '_blank';
                 item.innerHTML = `<h3>${u.nome}</h3><p>${u.endereco}</p>`;
-
-                item.onmouseover = () => {
-                    map.flyTo([u.lat, u.lng], 10);
+                item.onclick = () => {
+                    map.flyTo([u.lat, u.lng], 13);
                     markers[u.nome].openPopup();
                 };
-
                 listElement.appendChild(item);
 
-                // B) Marcador no Mapa com Nome Visível
-                const markerIcon = createIcon(u.nome, u.icone || 'orange');
+                // Icone no Mapa
+                const markerIcon = createIcon(u.nome, u.icone || 'green');
                 const marker = L.marker([u.lat, u.lng], { icon: markerIcon }).addTo(markersGroup);
 
+                // Cria slug para as fotos
+                const slug = u.nome.toLowerCase()
+                    .normalize("NFD")               // Remove acentos
+                    .replace(/[\u0300-\u036f]/g, "") // Remove acentos
+                    .replace(/\s+/g, '');           // REMOVE TODOS OS ESPAÇOS (Santa Juliana vira santajuliana)
+
                 const popupContent = `
-                <div style="color: white;">
+                <div style="color: white; min-width: 200px;">
                     <h3 style="margin:0; color:var(--hortsoy-accent);">${u.nome}</h3>
                     <p style="margin:5px 0; font-size:12px;">${u.endereco}</p>
-                    <a href="${u.link}" target="_blank" class="btn-maps-popup">Google Maps</a>
-                </div>
-            `;
+                    <div style="display: flex; gap: 8px; margin-top: 10px;">
+                        <a href="${u.link}" target="_blank" class="btn-maps-popup" style="flex:1.5; text-align:center; text-decoration:none; background:var(--hortsoy-green); color:white; padding:5px; border-radius:4px; font-size:11px;">Google Maps</a>
+                        <button onclick="abrirDetalhes('${slug}', '${u.nome}')" class="btn-fotos-popup">Fotos</button>
+                    </div>
+                </div>`;
+
                 marker.bindPopup(popupContent);
                 markers[u.nome] = marker;
             });
             lucide.createIcons();
         }
 
-        // Armazena referências dos marcadores para interação lista->mapa
-        const markers = {};
-
-        // Início das funções e filtros
         filterInput.addEventListener('input', render);
         render();
 
-        // 5. PLAYER DE MÚSICA 
+        // 5. FUNÇÕES DO MODAL DE FOTOS
+        function abrirDetalhes(slug, nome) {
+            const modal = document.getElementById('modal-unidade');
+            const titulo = document.getElementById('modal-titulo');
+            const galeria = document.getElementById('galeria-fotos');
+
+            titulo.innerText = `${nome}`; /* Marca a unidade*/
+            galeria.innerHTML = "";
+
+            // Caminhos das fotos.
+            const fotos = [`fotos/${slug}/1.Png`, `fotos/${slug}/2.Png`, `fotos/${slug}/3.Png`, `fotos/${slug}/4.Png`, `fotos/${slug}/5.Png`, `fotos/${slug}/6.Png`, `fotos/${slug}/7.Png`, `fotos/${slug}/8.Png`, `fotos/${slug}/9.Png`, `fotos/${slug}/10.Png`];
+
+            fotos.forEach(src => {
+                const img = document.createElement('img');
+                img.src = src;
+                img.onerror = () => img.remove(); // Remove se a imagem não existir
+                galeria.appendChild(img);
+            });
+
+            modal.style.display = "flex";
+        }
+
+        function fecharModal() {
+            document.getElementById('modal-unidade').style.display = "none";
+        }
+
+        window.onclick = (event) => {
+            if (event.target == document.getElementById('modal-unidade')) fecharModal();
+        };
+
+        // 6. PLAYER DE MÚSICA
         const playlist = [
             { name: "COLD PLAY - Viva la Vida", src: "/musicas/COLD PLAY - Viva la Vida.mp3" },
             { name: "HUNGRIA - Amor e Fé", src: "/musicas/HUNGRIA - Amor e Fé.mp3" },
@@ -178,31 +199,15 @@
         }
 
         function togglePlay() {
-            if (audio.paused) {
-                audio.play();
-                playBtn.innerHTML = '<i data-lucide="pause"></i>';
-            } else {
-                audio.pause();
-                playBtn.innerHTML = '<i data-lucide="play"></i>';
-            }
+            if (audio.paused) { audio.play(); playBtn.innerHTML = '<i data-lucide="pause"></i>'; }
+            else { audio.pause(); playBtn.innerHTML = '<i data-lucide="play"></i>'; }
             lucide.createIcons();
         }
 
-        function nextTrack() {
-            currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-            loadTrack(currentTrackIndex);
-            audio.play();
-        }
+        function nextTrack() { currentTrackIndex = (currentTrackIndex + 1) % playlist.length; loadTrack(currentTrackIndex); audio.play(); }
+        function prevTrack() { currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length; loadTrack(currentTrackIndex); audio.play(); }
 
-        function prevTrack() {
-            currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
-            loadTrack(currentTrackIndex);
-            audio.play();
-        }
-
-        // Inicializa a música
         loadTrack(currentTrackIndex);
-
     </script>
 </body>
 
