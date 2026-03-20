@@ -1,23 +1,25 @@
 # 🌱 Hortsoy Filiais
 
-Sistema web para organização e visualização das filiais da Hortsoy, com foco em centralização de informações e apoio operacional.
+Aplicação web desenvolvida para centralizar e facilitar o acesso às localidades das filiais da Hortsoy, apoiando a operação logística e administrativa.
 
 ---
 
-## 📌 Visão do Projeto
+## 🧠 Contexto
 
-O **Hortsoy Filiais** foi desenvolvido com o objetivo de resolver um problema comum em operações distribuídas: a dificuldade de acessar informações organizadas sobre diferentes unidades.
-
-A aplicação centraliza dados das filiais em uma interface simples, permitindo acesso rápido e redução de retrabalho no dia a dia.
+Empresas com múltiplas unidades frequentemente enfrentam dificuldades no acesso rápido e organizado de informações básicas das filiais, como localização e estrutura.
 
 ---
 
-## 🚀 Funcionalidades
+## ⚙️ Funcionalidades Atuais
 
-- 📍 Visualização de filiais
-- 🔎 Consulta rápida de informações
-- 🗂️ Organização centralizada dos dados
-- ⚡ Interface simples e direta
-- 📱 Estrutura leve e de fácil acesso
+- 📍 Listagem de filiais  
+- 🔎 Consulta rápida de dados  
+- 💻 Interface responsiva e simples  
 
 ---
+
+## 🛠️ Stack Tecnológica
+
+- HTML5  
+- CSS3  
+- JavaScript Vanilla  
