@@ -925,26 +925,33 @@ body {
    PLAYER DE MÚSICA
    ============================================ */
 
-/* Container principal do player */
+/* Container principal do player - tamanho reduzido por padrão */
 #music-player {
   position: fixed;
   top: 20px;
   right: 15px;
-  width: 260px;
+  width: 180px; /* Tamanho reduzido */
   background: rgba(0, 0, 0, 0.15);
   border: 2px solid rgba(46, 125, 50, 0.4);
   border-radius: 10px;
-  padding: 12px;
+  padding: 8px; /* Padding reduzido */
   z-index: 2000;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   text-align: center;
-  transition: var(--transition);
+  transition: all 0.3s ease; /* Transição suave */
   cursor: grab;
+  transform: scale(0.9); /* Escala reduzida */
+  transform-origin: top right;
 }
 
-#music-player:hover {
+/* Hover e focus - expande para tamanho normal */
+#music-player:hover,
+#music-player:focus-within {
+  width: 260px; /* Tamanho normal */
+  padding: 12px; /* Padding normal */
   background: var(--sidebar-bg);
   border-color: var(--hortsoy-green);
+  transform: scale(1); /* Escala normal */
 }
 
 #music-player.dragging {
