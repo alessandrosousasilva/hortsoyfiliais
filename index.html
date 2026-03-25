@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0, user-scalable=yes">
     <title>Hortsoy | Mapa de Filiais</title>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap">
@@ -19,9 +20,14 @@
 
     <aside class="sidebar">
         <div class="sidebar-header">
-            <h1>
-                <img src="logo-hortsoy.png" alt="HortSoy Logo" class="company-logo">
-            </h1>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <h1>
+                    <img src="logo-hortsoy.png" alt="HortSoy Logo" class="company-logo">
+                </h1>
+                <button id="theme-toggle" class="theme-toggle-btn" title="Alternar modo escuro/claro">
+                    <i data-lucide="moon"></i>
+                </button>
+            </div>
         </div>
 
         <div class="search-container">
@@ -32,20 +38,22 @@
         </div>
 
         <div class="units-list" id="units-list"></div>
+
+        <div id="music-player">
+            <div class="player-info">
+                <span id="track-name">Carregando...</span>
+                <input type="range" id="progress-bar" value="0" max="100">
+            </div>
+            <div class="player-controls">
+                <button onclick="prevTrack()"><i data-lucide="skip-back"></i></button>
+                <button onclick="togglePlay()" id="play-btn"><i data-lucide="play"></i></button>
+                <button onclick="nextTrack()"><i data-lucide="skip-forward"></i></button>
+            </div>
+            <audio id="audio-element"></audio>
+        </div>
     </aside>
 
-    <div id="music-player">
-        <div class="player-info">
-            <span id="track-name">Carregando...</span>
-            <input type="range" id="progress-bar" value="0" max="100">
-        </div>
-        <div class="player-controls">
-            <button onclick="prevTrack()"><i data-lucide="skip-back"></i></button>
-            <button onclick="togglePlay()" id="play-btn"><i data-lucide="play"></i></button>
-            <button onclick="nextTrack()"><i data-lucide="skip-forward"></i></button>
-        </div>
-        <audio id="audio-element"></audio>
-    </div>
+
 
     <main id="map"></main>
 
@@ -59,10 +67,71 @@
     </div>
 
     <script>
+        // 0. GERENCIAMENTO DE TEMA (DARK/LIGHT MODE)
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeButton(savedTheme);
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton(newTheme);
+        }
+
+        function updateThemeButton(theme) {
+            const btn = document.getElementById('theme-toggle');
+            const logo = document.querySelector('.company-logo');
+
+            if (btn) {
+                btn.innerHTML = theme === 'dark'
+                    ? '<i data-lucide="sun"></i>'
+                    : '<i data-lucide="moon"></i>';
+                lucide.createIcons();
+            }
+
+            if (logo) {
+                logo.src = theme === 'dark' ? 'logo-hortsoy.png' : 'logo-hortsoy-ligth.png';
+            }
+        }
+
+        // Inicializa o tema quando a página carrega
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initWeatherSystem();
+            const themeBtn = document.getElementById('theme-toggle');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', toggleTheme);
+            }
+
+            // Efeito de cursor customizado
+            const cursor = document.createElement('div');
+            cursor.className = 'cursor-dot';
+            document.body.appendChild(cursor);
+
+            document.addEventListener('mousemove', (event) => {
+                cursor.style.left = `${event.clientX}px`;
+                cursor.style.top = `${event.clientY}px`;
+            });
+
+            document.addEventListener('mousedown', () => cursor.classList.add('active'));
+            document.addEventListener('mouseup', () => cursor.classList.remove('active'));
+
+            document.querySelectorAll('button, a, .unit-item, .btn-maps-popup, .btn-fotos-popup').forEach((element) => {
+                element.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+                element.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+            });
+        });
+
         // 1. DADOS DAS UNIDADES
         const unidades = [
-            { nome: "ADM", endereco: "AV. SANTOS DUMONT, 130", link: "https://maps.app.goo.gl/fyeeoFGsbZKB9XEu6", lat: -19.7467, lng: -47.9391, icone: 'green' },
-            { nome: "SANTA JULIANA", endereco: "AV. JOAQUIM HONORIO DA SILVA, 20", link: "https://maps.app.goo.gl/4M9MvdKPrLpbiegs5", lat: -19.30989518168748, lng: -47.53400394220797, icone: 'green' },
+            { nome: "ADM", endereco: "AV. SANTOS DUMONT, 130", link: "https://maps.app.goo.gl/fyeeoFGsbZKB9XEu6", lat: -19.7467, lng: -47.9391, icone: 'green', municipalHolidays: [{ day: '25/01', name: 'Aniversário de São Paulo' }], nationalHolidays: [{ day: '01/01', name: 'Ano Novo' }] },
+            { nome: "SANTA JULIANA", endereco: "AV. JOAQUIM HONORIO DA SILVA, 20", link: "https://maps.app.goo.gl/4M9MvdKPrLpbiegs5", lat: -19.30989518168748, lng: -47.53400394220797, icone: 'green', municipalHolidays: [{ day: '24/06', name: 'São João' }], nationalHolidays: [{ day: '07/09', name: 'Independência do Brasil' }] },
             { nome: "PATROCÍNIO", endereco: "AV. FARIA PEREIRA, 4677", link: "https://maps.app.goo.gl/fFhios9dDTEe1Wwd8", lat: -18.947761807309806, lng: -47.014211445521084, icone: 'green' },
             { nome: "IBIÁ", endereco: "AV. BARTOLOMEU RIBEIRO DE PAIVA, 934", link: "https://maps.app.goo.gl/bH4tTTLZPDqEQ3yx8", lat: -19.501516500491153, lng: -46.55006727355715, icone: 'green' },
             { nome: "ARAXÁ", endereco: "AV. JOSE ANANIAS AGUIAR, 5835", link: "https://maps.app.goo.gl/jyxtBeDQN77QFJgi9", lat: -19.5756022019829, lng: -46.95455589999999, icone: 'green' },
@@ -80,17 +149,38 @@
         ];
 
         // 2. CONFIGURAÇÃO DOS ÍCONES PERSONALIZADOS
-        const createIcon = (nome, color) => L.divIcon({
+        const createIcon = (nome, color, holiday = false) => L.divIcon({
             className: 'custom-div-icon',
             html: `
-            <div style="display: flex; flex-direction: column; align-items: center;">
+            <div style="position: relative; display: flex; flex-direction: column; align-items: center;">
                 <img src="marker-${color}.png" style="width: 40px; height: 40px;">
+                ${holiday ? '<div class="holiday-marker" title="Unidade em feriado">?</div>' : ''}
                 <span style="background-color: var(--card-bg); color: var(--hortsoy-accent); padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; border: 1px solid var(--hortsoy-green); white-space: nowrap; margin-top: -2px; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">${nome}</span>
             </div>`,
             iconSize: [40, 55],
             iconAnchor: [20, 40],
             popupAnchor: [0, -40]
         });
+
+        function getTodayKey() {
+            const now = new Date();
+            const d = String(now.getDate()).padStart(2, '0');
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            return `${d}/${m}`;
+        }
+
+        function getHolidayStatus(unit) {
+            const today = getTodayKey();
+            if (unit.municipalHolidays?.some(h => h.day === today)) {
+                const h = unit.municipalHolidays.find(h => h.day === today);
+                return { type: 'Municipal', name: h.name };
+            }
+            if (unit.nationalHolidays?.some(h => h.day === today)) {
+                const h = unit.nationalHolidays.find(h => h.day === today);
+                return { type: 'Nacional', name: h.name };
+            }
+            return null;
+        }
 
         // 3. INICIALIZAÇÃO DO MAPA
         const map = L.map('map').setView([-19.70, -47.00], 8);
@@ -100,6 +190,15 @@
 
         const markersGroup = L.layerGroup().addTo(map);
         const markers = {};
+
+        // Evento de clique na logo para resetar o mapa
+        const logo = document.querySelector('.company-logo');
+        if (logo) {
+            logo.style.cursor = 'pointer';
+            logo.addEventListener('click', () => {
+                map.setView([-19.70, -47.00], 8);
+            });
+        }
 
         // 4. FUNÇÕES DE RENDERIZAÇÃO E FILTRO
         const listElement = document.getElementById('units-list');
@@ -124,7 +223,8 @@
                 listElement.appendChild(item);
 
                 // Icone no Mapa
-                const markerIcon = createIcon(u.nome, u.icone || 'green');
+                const holiday = getHolidayStatus(u);
+                const markerIcon = createIcon(u.nome, u.icone || 'green', !!holiday);
                 const marker = L.marker([u.lat, u.lng], { icon: markerIcon }).addTo(markersGroup);
 
                 // Cria slug para as fotos
@@ -134,11 +234,11 @@
                     .replace(/\s+/g, '');           // REMOVE TODOS OS ESPAÇOS (Santa Juliana vira santajuliana)
 
                 const popupContent = `
-                <div style="color: white; min-width: 200px;">
+                <div style="color: white; min-width: 220px;">
                     <h3 style="margin:0; color:var(--hortsoy-accent);">${u.nome}</h3>
                     <p style="margin:5px 0; font-size:12px;">${u.endereco}</p>
-                    <div style="display: flex; gap: 8px; margin-top: 10px;">
-                        <a href="${u.link}" target="_blank" class="btn-maps-popup" style="flex:1.5; text-align:center; text-decoration:none; background:var(--hortsoy-green); color:white; padding:5px; border-radius:4px; font-size:11px;">Google Maps</a>
+                    <div class="popup-action-buttons">
+                        <a href="${u.link}" target="_blank" class="btn-maps-popup">Google Maps</a>
                         <button onclick="abrirDetalhes('${slug}', '${u.nome}')" class="btn-fotos-popup">Fotos</button>
                     </div>
                 </div>`;
@@ -208,6 +308,157 @@
         function prevTrack() { currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length; loadTrack(currentTrackIndex); audio.play(); }
 
         loadTrack(currentTrackIndex);
+
+        // Sistema de Clima
+        const API_KEY = '2c51f53e14f402123f518b63cdf4d002'; // Substitua pela sua chave da OpenWeatherMap
+        const weatherCache = new Map();
+
+        async function getWeatherData(lat, lng) {
+            const cacheKey = `${lat},${lng}`;
+            if (weatherCache.has(cacheKey)) {
+                return weatherCache.get(cacheKey);
+            }
+
+            try {
+                const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${API_KEY}&units=metric&lang=pt_br`);
+                const data = await response.json();
+                weatherCache.set(cacheKey, data);
+                return data;
+            } catch (error) {
+                console.error('Erro ao buscar dados do clima:', error);
+                return null;
+            }
+        }
+
+        // Traduzir condições do clima para português
+        function translateWeatherCondition(condition) {
+            const translations = {
+                'Clear': 'Céu limpo',
+                'Clouds': 'Nublado',
+                'Rain': 'Chuva',
+                'Drizzle': 'Garoa',
+                'Thunderstorm': 'Tempestade',
+                'Snow': 'Neve',
+                'Mist': 'Névoa',
+                'Fog': 'Névoa',
+                'Squall': 'Rajada',
+                'Tornado': 'Tornado',
+                'Smoke': 'Fumaça',
+                'Dust': 'Poeira',
+                'Sand': 'Areia',
+                'Ash': 'Cinzas'
+            };
+            return translations[condition] || condition;
+        }
+
+        function getWeatherIcon(condition) {
+            const icons = {
+                'Céu limpo': '☀️',
+                'Nublado': '☁️',
+                'Chuva': '🌧️',
+                'Garoa': '🌦️',
+                'Tempestade': '⛈️',
+                'Neve': '❄️',
+                'Névoa': '🌫️',
+            };
+            return icons[condition] || '🌤️';
+        }
+
+        function createWeatherAlert(temperature, rainChance, unitName) {
+            let alert = '';
+            let alertClass = '';
+
+            if (rainChance > 70) {
+                alert = `🚨 ${unitName}: Alta chance de chuva (${rainChance}%) - Possível pico de movimento!`;
+                alertClass = 'weather-alert-high';
+            } else if (rainChance > 40) {
+                alert = `⚠️ ${unitName}: Possibilidade de chuva (${rainChance}%) - Fique atento`;
+                alertClass = 'weather-alert-medium';
+            } else if (temperature > 30) {
+                alert = `🔥 ${unitName}: Temperatura alta (${temperature}°C) - Verifique ar condicionado`;
+                alertClass = 'weather-alert-heat';
+            } else if (temperature < 15) {
+                alert = `❄️ ${unitName}: Temperatura baixa (${temperature}°C) - Prepare aquecedores`;
+                alertClass = 'weather-alert-cold';
+            }
+
+            return { alert, alertClass };
+        }
+
+        async function updateWeatherForUnit(unit) {
+            const weatherData = await getWeatherData(unit.lat, unit.lng);
+            if (!weatherData) return;
+
+            const temp = Math.round(weatherData.main.temp);
+            const condition = weatherData.weather[0].main;
+            const conditionPt = translateWeatherCondition(condition);
+            const icon = getWeatherIcon(conditionPt);
+            const rainChance = weatherData.rain ? Math.round(weatherData.rain['1h'] * 100) : 0;
+
+            // Atualizar item da lista lateral
+            const unitItems = document.querySelectorAll('.unit-item');
+            unitItems.forEach(item => {
+                if (item.querySelector('h3').textContent === unit.nome) {
+                    const weatherDiv = document.createElement('div');
+                    weatherDiv.className = 'unit-weather';
+                    weatherDiv.innerHTML = `
+                        <span class="weather-icon">${icon}</span>
+                        <span class="weather-temp">${temp}°C</span>
+                        <span class="weather-condition">${conditionPt}</span>
+                        ${rainChance > 0 ? `<span class="weather-rain">💧${rainChance}%</span>` : ''}
+                    `;
+                    item.appendChild(weatherDiv);
+                }
+            });
+        }
+
+        function showWeatherAlert(message, alertClass) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `weather-alert ${alertClass}`;
+            alertDiv.innerHTML = `
+                <span class="alert-icon">⚠️</span>
+                <span class="alert-message">${message}</span>
+                <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+            `;
+
+            const alertsContainer = document.getElementById('weather-alerts') || createAlertsContainer();
+            alertsContainer.appendChild(alertDiv);
+
+            // Auto-remover após 10 segundos
+            setTimeout(() => {
+                if (alertDiv.parentElement) {
+                    alertDiv.remove();
+                }
+            }, 10000);
+        }
+
+        function createAlertsContainer() {
+            const container = document.createElement('div');
+            container.id = 'weather-alerts';
+            container.className = 'weather-alerts-container';
+            document.body.appendChild(container);
+            return container;
+        }
+
+        // Inicializar clima para todas as unidades
+        async function initWeatherSystem() {
+            if (!API_KEY || API_KEY === 'SUA_API_KEY_AQUI') {
+                console.warn('API Key do OpenWeatherMap não configurada. Sistema de clima desabilitado.');
+                return;
+            }
+
+            for (const unit of unidades) {
+                await updateWeatherForUnit(unit);
+                // Pequeno delay para não sobrecarregar a API
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+
+            // Atualizar a cada 30 minutos
+            setInterval(() => {
+                weatherCache.clear();
+                unidades.forEach(unit => updateWeatherForUnit(unit));
+            }, 30 * 60 * 1000);
+        }
     </script>
 </body>
 
