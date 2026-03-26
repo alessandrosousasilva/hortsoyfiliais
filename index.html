@@ -533,14 +533,18 @@
                 const condition = weatherData.weather[0].main;
                 const conditionPt = translateWeatherCondition(condition);
                 const icon = getWeatherIcon(conditionPt);
-                
                 /*const rainChance = weatherData.rain ? Math.round(weatherData.rain['1h'] * 100) : 0;*/
                 const rainVolume = weatherData.rain ? weatherData.rain['1h'] : 0;
 
                 // Atualizar item da lista lateral com dados do clima
                 const unitItems = document.querySelectorAll('.unit-item');
                 unitItems.forEach(item => {
-                    if (item.querySelector('h3').textContent === unit.nome) {
+
+                    /*if (item.querySelector('h3').textContent === unit.nome) {
+                        const weatherDiv = document.createElement('div');
+                        weatherDiv.className = 'unit-weather';
+                    */
+                        if (item.querySelector('h3').textContent === unit.nome) {
 
                         // Tenta encontrar um weatherDiv existente para não duplicar
                         let weatherDiv = item.querySelector('.unit-weather');
@@ -550,13 +554,14 @@
                             weatherDiv = document.createElement('div');
                             weatherDiv.className = 'unit-weather';
                             item.appendChild(weatherDiv);
-                            
-                        // Atualiza o conteúdo (seja novo ou existente)  
+                        }
+
+                        // Atualiza o conteúdo (seja novo ou existente)
                         weatherDiv.innerHTML = `
                         <span class="weather-icon">${icon}</span>
                         <span class="weather-temp">${temp}°C</span>
                         <span class="weather-condition">${conditionPt}</span>
-                        ${rainChance > 0 ? `<span class="weather-rain">💧${rainChance}mm</span>` : ''}
+                        ${rainVolume > 0 ? `<span class="weather-rain">💧${rainVolume}mm</span>` : ''}
                     `;
                         item.appendChild(weatherDiv);
                     }
