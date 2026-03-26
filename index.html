@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0, user-scalable=yes">
-    <title>Hortsoy | Mapa de Filiais</title>
 
-    <!-- Fontes Google -->
+    <title>Hortsoy | Mapa Filiais</title>
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap">
     <!-- Ícones Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -15,27 +15,32 @@
     <!-- Leaflet CSS e JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <!-- CSS personalizado -->
     <link rel="stylesheet" href="styles.css">
 
+    <!-- ICO personalizado -->
+    <link rel="shortcut icon" type="image/x-icon" href="/ico-hortsot.ico">
 </head>
 
 <body>
 
     <body>
 
-        <!-- Sidebar lateral esquerda com lista de unidades, busca e player de música -->
+        <!-- Sidebar lateral esquerda com lista das unidades, busca -->
         <aside class="sidebar">
-            <!-- Cabeçalho da sidebar com logo e botões de controle -->
+            <!-- Cabeçalho da sidebar com logo -->
             <div class="sidebar-header">
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                     <h1>
                         <img src="logo-hortsoy.png" alt="HortSoy Logo" class="company-logo">
                     </h1>
                     <div style="display: flex; gap: 8px; align-items: center;">
+
                         <!-- Botão para alternar sidebar em mobile -->
                         <button id="mobile-sidebar-toggle" class="mobile-sidebar-toggle" title="Mostrar/ocultar painel"
                             aria-label="Toggle painel">☰</button>
+
                         <!-- Botão para alternar tema escuro/claro -->
                         <button id="theme-toggle" class="theme-toggle-btn" title="Alternar modo escuro/claro">
                             <i data-lucide="moon"></i>
@@ -44,7 +49,7 @@
                 </div>
             </div>
 
-            <!-- Campo de busca para filtrar unidades -->
+            <!-- Campo de busca de unidades -->
             <div class="search-container">
                 <div class="search-wrapper">
                     <i data-lucide="search"></i>
@@ -70,7 +75,7 @@
             </div>
         </aside>
 
-        <!-- Área principal com o mapa -->
+        <!-- Área principal do mapa -->
         <main id="map"></main>
 
         <!-- Modal para exibir fotos das unidades -->
@@ -199,7 +204,7 @@
             /**
              * Cria um ícone personalizado para o marcador no mapa
              * @param {string} nome - Nome da unidade
-             * @param {string} color - Cor do ícone ('green', etc.)
+             * @param {string} color - Cor do ícone ('green')
              * @param {boolean} holiday - Se está em feriado
              * @returns {L.DivIcon} Ícone do Leaflet
              */
@@ -422,8 +427,8 @@
             // 7. SISTEMA DE CLIMA
             // ============================================
 
-            // Chave da API OpenWeatherMap (substitua pela sua)
-            const API_KEY = '2c51f53e14f402123f518b63cdf4d002'; // Substitua pela sua chave da OpenWeatherMap
+            // Chave da API OpenWeatherMap 
+            const API_KEY = '2c51f53e14f402123f518b63cdf4d002'; // Chave da OpenWeatherMap
             // Cache para evitar chamadas repetidas à API
             const weatherCache = new Map();
 
@@ -465,12 +470,6 @@
                     'Snow': 'Neve',
                     'Mist': 'Névoa',
                     'Fog': 'Névoa',
-                    'Squall': 'Rajada',
-                    'Tornado': 'Tornado',
-                    'Smoke': 'Fumaça',
-                    'Dust': 'Poeira',
-                    'Sand': 'Areia',
-                    'Ash': 'Cinzas'
                 };
                 return translations[condition] || condition;
             }
@@ -491,34 +490,6 @@
                     'Névoa': '🌫️',
                 };
                 return icons[condition] || '🌤️';
-            }
-
-            /**
-             * Cria alerta de clima baseado na temperatura e chance de chuva
-             * @param {number} temperature - Temperatura em °C
-             * @param {number} rainChance - Chance de chuva em %
-             * @param {string} unitName - Nome da unidade
-             * @returns {Object} Objeto com alert e alertClass
-             */
-            function createWeatherAlert(temperature, rainChance, unitName) {
-                let alert = '';
-                let alertClass = '';
-
-                if (rainChance > 70) {
-                    alert = `🚨 ${unitName}: Alta chance de chuva (${rainChance}%) - Possível pico de movimento!`;
-                    alertClass = 'weather-alert-high';
-                } else if (rainChance > 40) {
-                    alert = `⚠️ ${unitName}: Possibilidade de chuva (${rainChance}%) - Fique atento`;
-                    alertClass = 'weather-alert-medium';
-                } else if (temperature > 30) {
-                    alert = `🔥 ${unitName}: Temperatura alta (${temperature}°C) - Verifique ar condicionado`;
-                    alertClass = 'weather-alert-heat';
-                } else if (temperature < 15) {
-                    alert = `❄️ ${unitName}: Temperatura baixa (${temperature}°C) - Prepare aquecedores`;
-                    alertClass = 'weather-alert-cold';
-                }
-
-                return { alert, alertClass };
             }
 
             /**
@@ -566,43 +537,6 @@
                         item.appendChild(weatherDiv);
                     }
                 });
-            }
-
-            /**
-             * Mostra alerta de clima na tela
-             * @param {string} message - Mensagem do alerta
-             * @param {string} alertClass - Classe CSS do alerta
-             */
-            function showWeatherAlert(message, alertClass) {
-                const alertDiv = document.createElement('div');
-                alertDiv.className = `weather-alert ${alertClass}`;
-                alertDiv.innerHTML = `
-                <span class="alert-icon">⚠️</span>
-                <span class="alert-message">${message}</span>
-                <button class="alert-close" onclick="this.parentElement.remove()">×</button>
-            `;
-
-                const alertsContainer = document.getElementById('weather-alerts') || createAlertsContainer();
-                alertsContainer.appendChild(alertDiv);
-
-                // Auto-remover após 10 segundos
-                setTimeout(() => {
-                    if (alertDiv.parentElement) {
-                        alertDiv.remove();
-                    }
-                }, 10000);
-            }
-
-            /**
-             * Cria container para alertas de clima
-             * @returns {HTMLElement} Container criado
-             */
-            function createAlertsContainer() {
-                const container = document.createElement('div');
-                container.id = 'weather-alerts';
-                container.className = 'weather-alerts-container';
-                document.body.appendChild(container);
-                return container;
             }
 
             /**
