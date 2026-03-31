@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo-hortsoy.png" alt="Logo Hortsoy" width="300"/>
+  <img src="/logos/logo-hortsoy-ligth.png" alt="Logo Hortsoy" width="300"/>
 </p>
 
 <p align="center">
