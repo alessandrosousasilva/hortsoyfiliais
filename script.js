@@ -393,10 +393,10 @@ const updateCityRainLayer = (unit, condition) => {
     if (!rainCircles[unit.nome]) {
       rainCircles[unit.nome] = L.circle([unit.lat, unit.lng], {
         radius: 2000,
-        color: "#4fc3f7",
+        color: "#4fc2f700",
         weight: 1,
-        fillColor: "#4fc3f7",
-        fillOpacity: 0.92,
+        fillColor: "#4fc2f70c",
+        fillOpacity: 0.99,
         interactive: false,
       }).addTo(rainCircleLayer);
     }
