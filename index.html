@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0, user-scalable=yes">
+
+    <title>Hortsoy | Mapa Filiais</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap">
+    <!-- Ícones Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Leaflet CSS e JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- ICO personalizado -->
+    <link rel="shortcut icon" type="image/x-icon" href="/logos/ico-hortsot.ico">
+
+</head>
+
+<body>
+
+    <!-- Sidebar lateral esquerda com lista das unidades, busca -->
+    <aside class="sidebar">
+        <!-- Cabeçalho da sidebar com logo -->
+        <div class="sidebar-header">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <h1>
+                    <img src="/logos/logo-hortsoy-light.png" alt="HortSoy Logo" class="company-logo">
+                </h1>
+                <div style="display: flex; gap: 8px; align-items: center;">
+
+                    <!-- Botão para alternar sidebar em mobile -->
+                    <button id="mobile-sidebar-toggle" class="mobile-sidebar-toggle" title="Mostrar/ocultar painel"
+                        aria-label="Toggle painel">☰</button>
+
+                    <!-- Botão para alternar tema escuro/claro -->
+                    <button id="theme-toggle" class="theme-toggle-btn" title="Alternar modo escuro/claro">
+                        <i data-lucide="moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Campo de busca de unidades -->
+        <div class="search-container">
+            <div class="search-wrapper">
+                <i data-lucide="search"></i>
+                <input type="text" id="filter" class="search-input" placeholder="Pesquisar filial...">
+            </div>
+        </div>
+
+        <!-- Lista de unidades -->
+        <div class="units-list" id="units-list"></div>
+
+        <!-- Player de música -->
+        <div id="music-player">
+            <div class="player-info">
+                <span id="track-name">Carregando...</span>
+                <input type="range" id="progress-bar" value="0" max="100">
+            </div>
+            <div class="player-controls">
+                <button onclick="prevTrack()"><i data-lucide="skip-back"></i></button>
+                <button onclick="togglePlay()" id="play-btn"><i data-lucide="play"></i></button>
+                <button onclick="nextTrack()"><i data-lucide="skip-forward"></i></button>
+            </div>
+            <audio id="audio-element"></audio>
+        </div>
+    </aside>
+
+    <!-- Área principal do mapa -->
+    <main id="map"></main>
+
+    <!-- Modal para exibir fotos das unidades -->
+    <div id="modal-unidade" class="modal-container">
+        <div class="modal-content">
+            <span class="close-modal" onclick="fecharModal()">&times;</span>
+            <h2 id="modal-titulo" style="color: var(--hortsoy-accent); margin: 0;">Unidade</h2>
+            <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
+            <div id="galeria-fotos" class="galeria-grid"></div>
+        </div>
+    </div>
+
+    <script src="/script.js"></script>
+
+</body>
+
+</html>
