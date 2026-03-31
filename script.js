@@ -386,6 +386,7 @@ const rainCircleLayer = L.layerGroup().addTo(map);
 const markers = {};
 const rainCircles = {};
 
+// Efeito de chuva sobre icones de unidades com condições de chuva
 const updateCityRainLayer = (unit, condition) => {
   const rainy = isRainCondition(condition);
   if (rainy) {
@@ -395,7 +396,7 @@ const updateCityRainLayer = (unit, condition) => {
         color: "#4fc3f7",
         weight: 1,
         fillColor: "#4fc3f7",
-        fillOpacity: 0.12,
+        fillOpacity: 0.92,
         interactive: false,
       }).addTo(rainCircleLayer);
     }
