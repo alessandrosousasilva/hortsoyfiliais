@@ -6,15 +6,18 @@
 🔗 https://hortsoyfiliais.netlify.app/
 </p>
 
-Aplicação web desenvolvida para centralizar e facilitar o acesso às localidades das filiais da Hortsoy, apoiando a operação logística e administrativa.
-
+Aplicação web desenvolvida para centralizar e facilitar o acesso às localidades das filiais da HortSoy, apoiando a operação logística e administrativa.
 
 ---
 
 ## ⚙️ Funcionalidades Atuais
 
-- 📍 Listagem de filiais  
-- 💻 Interface responsiva e simples  
+- Listagem de filiais 
+- Endereço correto e direcionado 
+- Temperaturas nas unidades e mm na ultima hora 
+- Fotos em cada unidade 
+- Modo Claro/Escuro
+- Player de música 
 
 ---
 
