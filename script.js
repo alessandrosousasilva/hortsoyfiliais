@@ -325,7 +325,7 @@ const createIcon = (nome, color, holiday = false, weatherCondition = "") => {
     className: "custom-div-icon",
     html: `
                 <div style="position: relative; display: flex; flex-direction: column; align-items: center;">
-                    ${rainy ? '<div class="rain-drops"><span></span><span></span><span></span></div>' : ""}
+                    ${rainy ? '<div class="rain-drops"><span></span><span></span><span></span><span></span><span></span></div>' : ""}
                     <img src="/logos/marker-${color}.png" style="width: 40px; height: 40px;">
                     ${holiday ? '<div class="holiday-marker" title="Unidade em feriado">F</div>' : ""}
                     <span style="background-color: var(--card-bg); color: var(--hortsoy-accent); padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; border: 1px solid var(--hortsoy-green); white-space: nowrap; margin-top: -2px; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">${nome}</span>
