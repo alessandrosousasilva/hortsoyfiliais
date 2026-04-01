@@ -129,39 +129,6 @@ const unidades = [
     nationalHolidays: [],
   },
   {
-    nome: "SANTA JULIANA",
-    endereco: "AV. JOAQUIM HONORIO DA SILVA, 20",
-    link: "https://maps.app.goo.gl/4M9MvdKPrLpbiegs5",
-    lat: -19.30989518168748,
-    lng: -47.53400394220797,
-    icone: "green",
-    municipalHolidays: [{ day: "17/12", name: "Aniversário de Santa Juliana" }],
-
-    nationalHolidays: [],
-  },
-  {
-    nome: "PATROCÍNIO",
-    endereco: "AV. FARIA PEREIRA, 4677",
-    link: "https://maps.app.goo.gl/fFhios9dDTEe1Wwd8",
-    lat: -18.947761807309806,
-    lng: -47.014211445521084,
-    icone: "green",
-    municipalHolidays: [{ day: "07/04", name: "Aniversário de Patrocínio" }],
-
-    nationalHolidays: [],
-  },
-  {
-    nome: "IBIÁ",
-    endereco: "AV. BARTOLOMEU RIBEIRO DE PAIVA, 934",
-    link: "https://maps.app.goo.gl/bH4tTTLZPDqEQ3yx8",
-    lat: -19.501516500491153,
-    lng: -46.55006727355715,
-    icone: "green",
-    municipalHolidays: [{ day: "07/09", name: "Aniversário de Ibiá" }],
-
-    nationalHolidays: [],
-  },
-  {
     nome: "ARAXÁ",
     endereco: "AV. JOSE ANANIAS AGUIAR, 5835",
     link: "https://maps.app.goo.gl/jyxtBeDQN77QFJgi9",
@@ -173,72 +140,13 @@ const unidades = [
     nationalHolidays: [],
   },
   {
-    nome: "SÃO GOTARDO",
-    endereco: "ROD. MG 235, 590 KM 88",
-    link: "https://maps.app.goo.gl/DzJVgHy9Hn5GhFxR8",
-    lat: -19.35339095816613,
-    lng: -46.13111095856429,
+    nome: "BAMBUÍ",
+    endereco: "RUA ALZIRA TORRES, 681",
+    link: "https://maps.app.goo.gl/a9BcQQsscCR7VptF6",
+    lat: -20.018301100116915,
+    lng: -45.98550917353176,
     icone: "green",
-    municipalHolidays: [{ day: "30/09", name: "Aniversário de São Gotardo" }],
-
-    nationalHolidays: [],
-  },
-  {
-    nome: "IRAÍ DE MINAS",
-    endereco: "AV. SETE DE SETEMBRO, 285",
-    link: "https://maps.app.goo.gl/XsR3rL4tbc8ddQkc9",
-    lat: -18.98763716315782,
-    lng: -47.4699199619346,
-    icone: "green",
-    municipalHolidays: [{ day: "01/03", name: "Aniversário de Iraí de Minas" }],
-
-    nationalHolidays: [],
-  },
-  {
-    nome: "PATOS DE MINAS",
-    endereco: "AV. PRESIDENTE TANCREDO NEVES, 540",
-    link: "https://maps.app.goo.gl/6iEMCYAjG8WmN2um9",
-    lat: -18.62084965162708,
-    lng: -46.51175157375422,
-    icone: "green",
-    municipalHolidays: [
-      { day: "24/05", name: "Aniversário de Patos de Minas" },
-    ],
-
-    nationalHolidays: [],
-  },
-  {
-    nome: "COROMANDEL",
-    endereco: "AV. GOVERNADOR ISRAEL PINHEIRO, 691",
-    link: "https://maps.app.goo.gl/uLiejz5g2PWbLsmy6",
-    lat: -18.483407164034354,
-    lng: -47.20205250956627,
-    icone: "green",
-    municipalHolidays: [{ day: "07/09", name: "Aniversário de Coromandel" }],
-
-    nationalHolidays: [],
-  },
-  {
-    nome: "UBERABA",
-    endereco: "AV. DEP. JOSE MARCUS CHEREM, 1020",
-    link: "https://maps.app.goo.gl/X86d192AibphuJ1a6",
-    lat: -19.773730218689845,
-    lng: -47.93592100258318,
-    icone: "green",
-    municipalHolidays: [
-      { day: "02/03", name: "Aniversário de Uberaba" },
-      { day: "15/08", name: "Nossa Senhora da Abadia" },
-    ],
-    nationalHolidays: [],
-  },
-  {
-    nome: "PASSOS",
-    endereco: "ROD. MG - 050, 628",
-    link: "https://maps.app.goo.gl/jfV4bCUmtXbEnFar9",
-    lat: -20.73938776721489,
-    lng: -46.59563708792725,
-    icone: "green",
-    municipalHolidays: [{ day: "14/05", name: "Aniversário de Passos" }],
+    municipalHolidays: [{ day: "10/07", name: "Aniversário de Bambuí" }],
 
     nationalHolidays: [],
   },
@@ -256,28 +164,6 @@ const unidades = [
     nationalHolidays: [],
   },
   {
-    nome: "PIUMHI",
-    endereco: "RUA PADRE ABEL, 1396",
-    link: "https://maps.app.goo.gl/S1g5TkkesmQRLTJC7",
-    lat: -20.461805785908382,
-    lng: -45.96862264612876,
-    icone: "green",
-    municipalHolidays: [{ day: "20/07", name: "Aniversário de Piumhi" }],
-
-    nationalHolidays: [],
-  },
-  {
-    nome: "BAMBUÍ",
-    endereco: "RUA ALZIRA TORRES, 681",
-    link: "https://maps.app.goo.gl/a9BcQQsscCR7VptF6",
-    lat: -20.018301100116915,
-    lng: -45.98550917353176,
-    icone: "green",
-    municipalHolidays: [{ day: "10/07", name: "Aniversário de Bambuí" }],
-
-    nationalHolidays: [],
-  },
-  {
     nome: "CONCEIÇÃO DAS ALAGOAS",
     endereco: "AV. JOAO MARQUES DE OLIVEIRA, 527",
     link: "https://maps.app.goo.gl/Y1KbwHgJAwynPrJt9",
@@ -287,6 +173,85 @@ const unidades = [
     municipalHolidays: [
       { day: "17/12", name: "Aniversário de Conceição das Alagoas" },
     ],
+
+    nationalHolidays: [],
+  },
+  {
+    nome: "COROMANDEL",
+    endereco: "AV. GOVERNADOR ISRAEL PINHEIRO, 691",
+    link: "https://maps.app.goo.gl/uLiejz5g2PWbLsmy6",
+    lat: -18.483407164034354,
+    lng: -47.20205250956627,
+    icone: "green",
+    municipalHolidays: [{ day: "07/09", name: "Aniversário de Coromandel" }],
+
+    nationalHolidays: [],
+  },
+  {
+    nome: "IBIÁ",
+    endereco: "AV. BARTOLOMEU RIBEIRO DE PAIVA, 934",
+    link: "https://maps.app.goo.gl/bH4tTTLZPDqEQ3yx8",
+    lat: -19.501516500491153,
+    lng: -46.55006727355715,
+    icone: "green",
+    municipalHolidays: [{ day: "07/09", name: "Aniversário de Ibiá" }],
+
+    nationalHolidays: [],
+  },
+  {
+    nome: "IRAÍ DE MINAS",
+    endereco: "AV. SETE DE SETEMBRO, 285",
+    link: "https://maps.app.goo.gl/XsR3rL4tbc8ddQkc9",
+    lat: -18.98763716315782,
+    lng: -47.4699199619346,
+    icone: "green",
+    municipalHolidays: [{ day: "01/03", name: "Aniversário de Iraí de Minas" }],
+
+    nationalHolidays: [],
+  },
+  {
+    nome: "PASSOS",
+    endereco: "ROD. MG - 050, 628",
+    link: "https://maps.app.goo.gl/jfV4bCUmtXbEnFar9",
+    lat: -20.73938776721489,
+    lng: -46.59563708792725,
+    icone: "green",
+    municipalHolidays: [{ day: "14/05", name: "Aniversário de Passos" }],
+
+    nationalHolidays: [],
+  },
+  {
+    nome: "PATOS DE MINAS",
+    endereco: "AV. PRESIDENTE TANCREDO NEVES, 540",
+    link: "https://maps.app.goo.gl/6iEMCYAjG8WmN2um9",
+    lat: -18.62084965162708,
+    lng: -46.51175157375422,
+    icone: "green",
+    municipalHolidays: [
+      { day: "24/05", name: "Aniversário de Patos de Minas" },
+    ],
+
+    nationalHolidays: [],
+  },
+  {
+    nome: "PATROCÍNIO",
+    endereco: "AV. FARIA PEREIRA, 4677",
+    link: "https://maps.app.goo.gl/fFhios9dDTEe1Wwd8",
+    lat: -18.947761807309806,
+    lng: -47.014211445521084,
+    icone: "green",
+    municipalHolidays: [{ day: "07/04", name: "Aniversário de Patrocínio" }],
+
+    nationalHolidays: [],
+  },
+  {
+    nome: "PIUMHI",
+    endereco: "RUA PADRE ABEL, 1396",
+    link: "https://maps.app.goo.gl/S1g5TkkesmQRLTJC7",
+    lat: -20.461805785908382,
+    lng: -45.96862264612876,
+    icone: "green",
+    municipalHolidays: [{ day: "20/07", name: "Aniversário de Piumhi" }],
 
     nationalHolidays: [],
   },
@@ -301,8 +266,45 @@ const unidades = [
 
     nationalHolidays: [],
   },
-];
+  {
+    nome: "SANTA JULIANA",
+    endereco: "AV. JOAQUIM HONORIO DA SILVA, 20",
+    link: "https://maps.app.goo.gl/4M9MvdKPrLpbiegs5",
+    lat: -19.30989518168748,
+    lng: -47.53400394220797,
+    icone: "green",
+    municipalHolidays: [
+      { day: "17/12", name: "Aniversário de Santa Juliana" },
+      { day: "15/08", name: "Nossa Senhora da Abadia" },
+    ],
 
+    nationalHolidays: [],
+  },
+  {
+    nome: "SÃO GOTARDO",
+    endereco: "ROD. MG 235, 590 KM 88",
+    link: "https://maps.app.goo.gl/DzJVgHy9Hn5GhFxR8",
+    lat: -19.35339095816613,
+    lng: -46.13111095856429,
+    icone: "green",
+    municipalHolidays: [{ day: "30/09", name: "Aniversário de São Gotardo" }],
+
+    nationalHolidays: [],
+  },
+  {
+    nome: "UBERABA",
+    endereco: "AV. DEP. JOSE MARCUS CHEREM, 1020",
+    link: "https://maps.app.goo.gl/X86d192AibphuJ1a6",
+    lat: -19.773730218689845,
+    lng: -47.93592100258318,
+    icone: "green",
+    municipalHolidays: [
+      { day: "02/03", name: "Aniversário de Uberaba" },
+      { day: "15/08", name: "Nossa Senhora da Abadia" },
+    ],
+    nationalHolidays: [],
+  },
+];
 // ============================================
 // 2. CONFIGURAÇÃO DOS ÍCONES PERSONALIZADOS
 // ============================================
