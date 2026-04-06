@@ -240,7 +240,7 @@ const unidades = [
     lat: -18.947761807309806,
     lng: -47.014211445521084,
     icone: "green",
-    municipalHolidays: [{ day: "07/04", name: "Aniversário de Patrocínio" }],
+    municipalHolidays: [{ day: "06/04", name: "Aniversário de Patrocínio" }],
 
     nationalHolidays: [],
   },
