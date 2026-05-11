@@ -199,17 +199,6 @@ const unidades = [
     nationalHolidays: [],
   },
   {
-    nome: "IRAÍ DE MINAS",
-    endereco: "AV. SETE DE SETEMBRO, 285",
-    link: "https://maps.app.goo.gl/XsR3rL4tbc8ddQkc9",
-    lat: -18.98763716315782,
-    lng: -47.4699199619346,
-    icone: "green",
-    municipalHolidays: [{ day: "01/03", name: "Aniversário de Iraí de Minas" }],
-
-    nationalHolidays: [],
-  },
-  {
     nome: "PASSOS",
     endereco: "ROD. MG - 050, 628",
     link: "https://maps.app.goo.gl/jfV4bCUmtXbEnFar9",
