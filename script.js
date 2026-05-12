@@ -30,7 +30,7 @@ function updateThemeButton(theme) {
     logo.src =
       theme === "dark"
         ? "/logos/logo-hortsoy.png"
-        : "logos/logo-hortsoy-ligth.png";
+        : "/logos/logo-hortsoy-ligth.png";
   }
 }
 
@@ -40,39 +40,45 @@ document.addEventListener("DOMContentLoaded", () => {
   const themeBtn = document.getElementById("theme-toggle");
   if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
 
-  const cursor = document.createElement("div");
-  cursor.className = "cursor-dot";
-  document.body.appendChild(cursor);
+  // Só ativa o cursor customizado se não for dispositivo touch
+  const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+  if (!isTouchDevice) {
+    const cursor = document.createElement("div");
+    cursor.className = "cursor-dot";
+    document.body.appendChild(cursor);
 
-  document.addEventListener("mousemove", (e) => {
-    cursor.style.left = `${e.clientX}px`;
-    cursor.style.top = `${e.clientY}px`;
-  });
-  document.addEventListener("mousedown", () => cursor.classList.add("active"));
-  document.addEventListener("mouseup", () => cursor.classList.remove("active"));
-
-  document
-    .querySelectorAll(
-      "button, a, .unit-item, .btn-maps-popup, .btn-fotos-popup",
-    )
-    .forEach((el) => {
-      el.addEventListener("mouseenter", () => cursor.classList.add("hovered"));
-      el.addEventListener("mouseleave", () =>
-        cursor.classList.remove("hovered"),
-      );
+    document.addEventListener("mousemove", (e) => {
+      cursor.style.left = `${e.clientX}px`;
+      cursor.style.top = `${e.clientY}px`;
     });
+    document.addEventListener("mousedown", () =>
+      cursor.classList.add("active"),
+    );
+    document.addEventListener("mouseup", () =>
+      cursor.classList.remove("active"),
+    );
 
-  const mobileSidebarToggle = document.getElementById("mobile-sidebar-toggle");
-  if (mobileSidebarToggle) {
-    mobileSidebarToggle.addEventListener("click", () => {
-      document.body.classList.toggle("sidebar-collapsed");
-      setTimeout(() => map.invalidateSize(), 280);
+    document.body.addEventListener("mouseover", (e) => {
+      if (
+        e.target.closest(
+          "button, a, .unit-item, .btn-maps-popup, .btn-fotos-popup, input",
+        )
+      )
+        cursor.classList.add("hovered");
+    });
+    document.body.addEventListener("mouseout", (e) => {
+      if (
+        e.target.closest(
+          "button, a, .unit-item, .btn-maps-popup, .btn-fotos-popup, input",
+        )
+      )
+        cursor.classList.remove("hovered");
     });
   }
 });
 
 // ============================================
-// 1. DADOS DAS UNIDADES
+// 1. DADOS DAS UNIDADES E FERIADOS
 // ============================================
 
 // Lista de feriados nacionais usados por todas as unidades
@@ -312,9 +318,36 @@ function getHolidayStatus(unit) {
 }
 
 // ============================================
-// 3. INICIALIZAÇÃO DO MAPA
+// 3. INICIALIZAÇÃO DO MAPA E CONTROLES
 // ============================================
-const map = L.map("map").setView([-19.7, -47.0], 8);
+// Remove os controles de zoom padrão na criação para readicioná-los na posição correta
+const map = L.map("map", { zoomControl: false }).setView([-19.7, -47.0], 8);
+
+// Adiciona o Zoom no topo esquerdo
+L.control.zoom({ position: "topleft" }).addTo(map);
+
+// Cria o botão de Menu/Sidebar customizado
+const SidebarToggleControl = L.Control.extend({
+  options: { position: "topleft" },
+  onAdd: function (map) {
+    const container = L.DomUtil.create(
+      "div",
+      "leaflet-bar leaflet-control custom-map-toggle",
+    );
+    container.innerHTML =
+      '<a href="#" title="Ocultar/Mostrar Menu" role="button" aria-label="Toggle Menu"><i data-lucide="menu" style="width: 18px; height: 18px;"></i></a>';
+    L.DomEvent.disableClickPropagation(container);
+    L.DomEvent.on(container, "click", function (e) {
+      L.DomEvent.preventDefault(e);
+      document.body.classList.toggle("sidebar-hidden");
+      lucide.createIcons();
+      setTimeout(() => map.invalidateSize(), 300);
+    });
+    return container;
+  },
+});
+map.addControl(new SidebarToggleControl());
+
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "© OpenStreetMap contributors",
 }).addTo(map);
@@ -412,49 +445,42 @@ filterInput.addEventListener("input", render);
 render();
 
 // ============================================
-// 5. MODAL DE FOTOS (COM SKELETON LOADING)
+// 5. MODAL DE FOTOS (OTIMIZADO COM PROMISES)
 // ============================================
-function abrirDetalhes(slug, nome) {
+async function abrirDetalhes(slug, nome) {
   const modal = document.getElementById("modal-unidade");
   const galeria = document.getElementById("galeria-fotos");
   document.getElementById("modal-titulo").innerText = nome;
 
   // Limpa a galeria e adiciona skeletons
   galeria.innerHTML = "";
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 4; i++) {
     const skeleton = document.createElement("div");
     skeleton.className = "skeleton";
     galeria.appendChild(skeleton);
   }
   modal.style.display = "flex";
 
-  // Lógica para tentar carregar as 10 fotos suavemente
-  const loadedImages = [];
-  let loadCount = 0;
+  // Carregamento paralelo
+  const imagePromises = Array.from({ length: 10 }, (_, i) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = `fotos/${slug}/${i + 1}.Png`;
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null);
+    });
+  });
 
-  for (let i = 1; i <= 10; i++) {
-    const img = new Image();
-    img.src = `fotos/${slug}/${i}.Png`;
-    img.onload = () => {
-      loadedImages.push(img);
-      checkAllLoaded();
-    };
-    img.onerror = () => {
-      checkAllLoaded(); // Ignora erro, mas contabiliza a tentativa
-    };
-  }
+  const results = await Promise.all(imagePromises);
+  const validImages = results.filter((img) => img !== null);
 
-  function checkAllLoaded() {
-    loadCount++;
-    if (loadCount === 10) {
-      galeria.innerHTML = ""; // Remove skeletons
-      if (loadedImages.length === 0) {
-        galeria.innerHTML =
-          "<p style='color: var(--text-muted); width: 100%; text-align: center;'>Nenhuma foto disponível.</p>";
-      } else {
-        loadedImages.forEach((img) => galeria.appendChild(img));
-      }
-    }
+  galeria.innerHTML = "";
+
+  if (validImages.length === 0) {
+    galeria.innerHTML =
+      "<p style='color: var(--text-muted); width: 100%; text-align: center; padding: 20px;'>Nenhuma foto disponível.</p>";
+  } else {
+    validImages.forEach((img) => galeria.appendChild(img));
   }
 }
 
@@ -466,7 +492,7 @@ window.onclick = (e) => {
 };
 
 // ============================================
-// 6. PLAYER DE MÚSICA (Mantido original)
+// 6. PLAYER DE MÚSICA
 // ============================================
 const playlist = [
   {
@@ -506,7 +532,7 @@ function prevTrack() {
 loadTrack(currentTrackIndex);
 
 // ============================================
-// 7. SISTEMA DE CLIMA (COM CACHE E CORREÇÃO DE %)
+// 7. SISTEMA DE CLIMA
 // ============================================
 const API_KEY = "2c51f53e14f402123f518b63cdf4d002";
 const WEATHER_CACHE_KEY = "hortsoy_weather_cache";
@@ -571,12 +597,10 @@ async function updateWeatherForUnit(unit) {
   const conditionPt = translateWeatherCondition(condition);
   const icon = getWeatherIcon(conditionPt);
 
-  // CORREÇÃO: Probabilidade em porcentagem (POP) em vez de volume de chuva
   let rainChance = 0;
   if (weatherData.pop !== undefined) {
     rainChance = Math.round(weatherData.pop * 100);
   } else if (weatherData.rain && weatherData.rain["1h"]) {
-    // Fallback matemático caso a API padrão retorne apenas volume, estimando a porcentagem
     rainChance = Math.min(Math.round(weatherData.rain["1h"] * 20), 100);
   }
 
@@ -625,184 +649,202 @@ async function initWeatherSystem() {
 // ============================================
 
 function switchTab(tabId) {
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-    document.getElementById(`tab-${tabId}`).classList.add('active');
-    lucide.createIcons();
+  document
+    .querySelectorAll(".tab-btn")
+    .forEach((btn) => btn.classList.remove("active"));
+  document
+    .querySelectorAll(".tab-content")
+    .forEach((content) => content.classList.remove("active"));
+  event.currentTarget.classList.add("active");
+  document.getElementById(`tab-${tabId}`).classList.add("active");
+  lucide.createIcons();
 }
 
 const geocoder = L.Control.Geocoder.nominatim();
 let routingControl = null;
 let waypointCount = 0;
 
-// Função para criar um novo campo de endereço dinamicamente
-function addWaypointInput(placeholder = "Adicionar destino", isRemovable = true) {
-    waypointCount++;
-    const container = document.getElementById('waypoints-container');
-    const inputId = `route-input-${waypointCount}`;
-    
-    const group = document.createElement('div');
-    group.className = 'input-group';
-    
-    // Define a cor do ícone (Partida, Destino ou Parada)
-    let iconClass = 'stop-icon';
-    if (waypointCount === 1) iconClass = 'start-icon';
-    else if (!isRemovable) iconClass = 'end-icon';
+function addWaypointInput(
+  placeholder = "Adicionar destino",
+  isRemovable = true,
+) {
+  waypointCount++;
+  const container = document.getElementById("waypoints-container");
+  const inputId = `route-input-${waypointCount}`;
 
-    group.innerHTML = `
+  const group = document.createElement("div");
+  group.className = "input-group";
+
+  let iconClass = "stop-icon";
+  if (waypointCount === 1) iconClass = "start-icon";
+  else if (!isRemovable) iconClass = "end-icon";
+
+  group.innerHTML = `
         <div class="route-icon ${iconClass}"></div>
         <input type="text" id="${inputId}" class="route-input" placeholder="${placeholder}" autocomplete="none">
         ${isRemovable ? `<button class="btn-remove-stop" onclick="removeWaypoint(this)" title="Remover parada"><i data-lucide="x" style="width: 16px; height: 16px;"></i></button>` : '<div style="width: 26px;"></div>'}
     `;
-    
-    container.appendChild(group);
-    setupAutocomplete(document.getElementById(inputId));
-    lucide.createIcons();
+
+  container.appendChild(group);
+  setupAutocomplete(document.getElementById(inputId));
+  lucide.createIcons();
 }
 
-// Remove uma parada intermediária
 function removeWaypoint(button) {
-    button.closest('.input-group').remove();
+  button.closest(".input-group").remove();
 }
 
-// Configura o autocompletar e armazena as coordenadas no próprio input
 function setupAutocomplete(inputElement) {
-    const parentContainer = inputElement.parentElement;
-    let debounceTimer;
+  const parentContainer = inputElement.parentElement;
+  let debounceTimer;
 
-    inputElement.addEventListener('input', function(e) {
-        clearTimeout(debounceTimer);
-        const query = e.target.value;
-        
-        // Limpa coordenadas antigas se o usuário apagar o texto
-        inputElement.removeAttribute('data-lat');
-        inputElement.removeAttribute('data-lng');
-        
-        let oldList = document.getElementById(inputElement.id + '-list');
-        if (oldList) oldList.remove();
+  inputElement.addEventListener("input", function (e) {
+    clearTimeout(debounceTimer);
+    const query = e.target.value;
 
-        if (query.length < 3) return;
+    inputElement.removeAttribute("data-lat");
+    inputElement.removeAttribute("data-lng");
 
-        debounceTimer = setTimeout(async () => {
-            try {
-                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=br&limit=5`);
-                const results = await response.json();
+    let oldList = document.getElementById(inputElement.id + "-list");
+    if (oldList) oldList.remove();
 
-                if (results.length === 0) return;
+    if (query.length < 3) return;
 
-                const list = document.createElement('div');
-                list.id = inputElement.id + '-list';
-                list.style.cssText = "position: absolute; top: 100%; left: 0; right: 34px; background: var(--card-bg); border: 1px solid var(--hortsoy-green); border-radius: 6px; max-height: 250px; overflow-y: auto; z-index: 9999; box-shadow: 0 4px 15px rgba(0,0,0,0.6); margin-top: 5px;";
-                
-                results.forEach(result => {
-                    const item = document.createElement('div');
-                    item.style.cssText = "padding: 12px; cursor: pointer; border-bottom: 1px solid rgba(46, 125, 50, 0.2); font-size: 12px; color: var(--text-main); line-height: 1.4;";
-                    item.innerHTML = `<strong>${result.display_name.split(',')[0]}</strong><br><span style="font-size: 10px; color: var(--text-muted);">${result.display_name.split(',').slice(1).join(',')}</span>`;
-                    
-                    item.addEventListener('mouseover', () => item.style.background = 'rgba(46, 125, 50, 0.2)');
-                    item.addEventListener('mouseout', () => item.style.background = 'transparent');
-                    
-                    item.addEventListener('click', function() {
-                        inputElement.value = result.display_name.split(',')[0] + ', ' + result.display_name.split(',')[1]; 
-                        
-                        // Salva as coordenadas escondidas dentro da tag do input
-                        inputElement.setAttribute('data-lat', result.lat);
-                        inputElement.setAttribute('data-lng', result.lon);
-                        list.remove();
-                    });
-                    list.appendChild(item);
-                });
-                parentContainer.appendChild(list);
-            } catch (error) {
-                console.error("Erro ao buscar endereço:", error);
-            }
-        }, 500);
-    });
+    debounceTimer = setTimeout(async () => {
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=br&limit=5`,
+        );
+        const results = await response.json();
 
-    document.addEventListener('click', function(e) {
-        if (e.target !== inputElement) {
-            const list = document.getElementById(inputElement.id + '-list');
-            if (list) list.remove();
-        }
-    });
+        if (results.length === 0) return;
+
+        const list = document.createElement("div");
+        list.id = inputElement.id + "-list";
+        list.style.cssText =
+          "position: absolute; top: 100%; left: 0; right: 34px; background: var(--card-bg); border: 1px solid var(--hortsoy-green); border-radius: 6px; max-height: 250px; overflow-y: auto; z-index: 9999; box-shadow: 0 4px 15px rgba(0,0,0,0.6); margin-top: 5px;";
+
+        results.forEach((result) => {
+          const item = document.createElement("div");
+          item.style.cssText =
+            "padding: 12px; cursor: pointer; border-bottom: 1px solid rgba(46, 125, 50, 0.2); font-size: 12px; color: var(--text-main); line-height: 1.4;";
+          item.innerHTML = `<strong>${result.display_name.split(",")[0]}</strong><br><span style="font-size: 10px; color: var(--text-muted);">${result.display_name.split(",").slice(1).join(",")}</span>`;
+
+          item.addEventListener(
+            "mouseover",
+            () => (item.style.background = "rgba(46, 125, 50, 0.2)"),
+          );
+          item.addEventListener(
+            "mouseout",
+            () => (item.style.background = "transparent"),
+          );
+
+          item.addEventListener("click", function () {
+            inputElement.value =
+              result.display_name.split(",")[0] +
+              ", " +
+              result.display_name.split(",")[1];
+
+            inputElement.setAttribute("data-lat", result.lat);
+            inputElement.setAttribute("data-lng", result.lon);
+            list.remove();
+          });
+          list.appendChild(item);
+        });
+        parentContainer.appendChild(list);
+      } catch (error) {
+        console.error("Erro ao buscar endereço:", error);
+      }
+    }, 500);
+  });
+
+  document.addEventListener("click", function (e) {
+    if (e.target !== inputElement) {
+      const list = document.getElementById(inputElement.id + "-list");
+      if (list) list.remove();
+    }
+  });
 }
 
-// Inicializa com 2 campos (Partida e Destino)
 addWaypointInput("Escolha o ponto de partida", false);
 addWaypointInput("Escolha o destino final", false);
 
-// Evento do botão "+ Adicionar parada"
-document.getElementById('btn-add-parada').addEventListener('click', () => {
-    // Insere o novo campo antes do último (Destino final)
-    const container = document.getElementById('waypoints-container');
-    const inputs = container.querySelectorAll('.input-group');
-    const lastInput = inputs[inputs.length - 1];
-    
-    // Adiciona e move o último para o final
-    addWaypointInput("Adicionar parada intermediária", true);
-    container.appendChild(lastInput); 
+document.getElementById("btn-add-parada").addEventListener("click", () => {
+  const container = document.getElementById("waypoints-container");
+  const inputs = container.querySelectorAll(".input-group");
+  const lastInput = inputs[inputs.length - 1];
+
+  addWaypointInput("Adicionar parada intermediária", true);
+  container.appendChild(lastInput);
 });
 
-// Calcula a rota lendo todos os inputs preenchidos
-document.getElementById('btn-calcular-rota').addEventListener('click', () => {
-    const inputs = document.querySelectorAll('.route-input');
-    const waypointsArray = [];
+document.getElementById("btn-calcular-rota").addEventListener("click", () => {
+  const inputs = document.querySelectorAll(".route-input");
+  const waypointsArray = [];
 
-    // Coleta as coordenadas de todos os inputs que foram preenchidos pela busca
-    inputs.forEach(input => {
-        const lat = input.getAttribute('data-lat');
-        const lng = input.getAttribute('data-lng');
-        if (lat && lng) {
-            waypointsArray.push(L.latLng(parseFloat(lat), parseFloat(lng)));
-        }
-    });
-
-    if (waypointsArray.length < 2) {
-        alert("Por favor, pesquise e selecione pelo menos 2 endereços na lista suspensa.");
-        return;
+  inputs.forEach((input) => {
+    const lat = input.getAttribute("data-lat");
+    const lng = input.getAttribute("data-lng");
+    if (lat && lng) {
+      waypointsArray.push(L.latLng(parseFloat(lat), parseFloat(lng)));
     }
+  });
 
-    if (routingControl) map.removeControl(routingControl);
+  if (waypointsArray.length < 2) {
+    alert(
+      "Por favor, pesquise e selecione pelo menos 2 endereços na lista suspensa.",
+    );
+    return;
+  }
 
-    routingControl = L.Routing.control({
-        waypoints: waypointsArray,
-        routeWhileDragging: false,
-        addWaypoints: false, // Desativa adicionar paradas clicando na linha
-        lineOptions: { styles: [{color: '#4caf50', opacity: 0.9, weight: 6}] },
-        createMarker: function(i, wp, nWps) {
-            let color = '#ffb300'; // Amarelo (Paradas no meio)
-            if (i === 0) color = '#4fc3f7'; // Azul (Partida)
-            else if (i === nWps - 1) color = '#ff5252'; // Vermelho (Destino)
+  if (routingControl) map.removeControl(routingControl);
 
-            return L.marker(wp.latLng, {
-                icon: L.divIcon({
-                    className: 'custom-div-icon',
-                    html: `<div style="background: ${color}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 6px rgba(0,0,0,0.6);"></div>`,
-                    iconSize: [14, 14],
-                    iconAnchor: [7, 7]
-                })
-            });
-        }
-    }).addTo(map);
+  routingControl = L.Routing.control({
+    waypoints: waypointsArray,
+    routeWhileDragging: false,
+    addWaypoints: false,
+    show: false, // Oculta as instruções de texto automáticas nativas
+    lineOptions: { styles: [{ color: "#4caf50", opacity: 0.9, weight: 6 }] },
+    createMarker: function (i, wp, nWps) {
+      let color = "#ffb300";
+      if (i === 0) color = "#4fc3f7";
+      else if (i === nWps - 1) color = "#ff5252";
 
-    routingControl.on('routesfound', function(e) {
-        const summary = e.routes[0].summary;
-        const distanciaKm = (summary.totalDistance / 1000).toFixed(1);
-        const tempoCarroSegundos = summary.totalTime;
-        const tempoCaminhaoSegundos = tempoCarroSegundos * 1.25; 
+      return L.marker(wp.latLng, {
+        icon: L.divIcon({
+          className: "custom-div-icon",
+          html: `<div style="background: ${color}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 6px rgba(0,0,0,0.6);"></div>`,
+          iconSize: [14, 14],
+          iconAnchor: [7, 7],
+        }),
+      });
+    },
+  }).addTo(map);
 
-        const formatTime = (secs) => {
-            const h = Math.floor(secs / 3600);
-            const m = Math.floor((secs % 3600) / 60);
-            return h > 0 ? `${h}h ${m}m` : `${m} min`;
-        };
+  routingControl.on("routesfound", function (e) {
+    const summary = e.routes[0].summary;
+    const distanciaKm = (summary.totalDistance / 1000).toFixed(1);
+    const tempoCarroSegundos = summary.totalTime;
+    const tempoCaminhaoSegundos = tempoCarroSegundos * 1.25;
 
-        document.getElementById('time-car').innerText = formatTime(tempoCarroSegundos);
-        document.getElementById('time-truck').innerText = formatTime(tempoCaminhaoSegundos);
-        document.getElementById('route-distance').innerText = `${distanciaKm} km de distância total`;
-        
-        document.getElementById('route-results').style.display = 'flex';
-        lucide.createIcons();
-    });
+    const formatTime = (secs) => {
+      const h = Math.floor(secs / 3600);
+      const m = Math.floor((secs % 3600) / 60);
+      return h > 0 ? `${h}h ${m}m` : `${m} min`;
+    };
+
+    document.getElementById("time-car").innerText =
+      formatTime(tempoCarroSegundos);
+    document.getElementById("time-truck").innerText = formatTime(
+      tempoCaminhaoSegundos,
+    );
+    document.getElementById("route-distance").innerText =
+      `${distanciaKm} km de distância total`;
+
+    document.getElementById("route-results").style.display = "flex";
+    lucide.createIcons();
+
+    // Ajusta o mapa para mostrar a rota completa automaticamente
+    map.fitBounds(L.latLngBounds(waypointsArray), { padding: [50, 50] });
+  });
 });
