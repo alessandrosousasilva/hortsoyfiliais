@@ -17,7 +17,7 @@ Aplicação web desenvolvida para centralizar e facilitar o acesso às localidad
 
 - Listagem de todas as filiais com endereço
 - Cálculo de rotas com múltiplas paradas e estimativa de tempo dedicada para carros e caminhões.
-- Temperaturas nas unidades e probabilidade de chuva em tempo real.
+- Temperaturas e probabilidade de chuva em tempo real.
 - Visualizador de fotos de cada unidade.
 - Modo Claro/Escuro.
 
@@ -25,11 +25,10 @@ Aplicação web desenvolvida para centralizar e facilitar o acesso às localidad
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **[HTML5]**
-- **[CSS3]**
-- **[JavaScript (Vanilla)]**
-- **[Leaflet.js]**
-- **[OpenWeather API]**
-- **[Nominatim/OSRM]**
+- **HTML5**
+- **CSS3**
+- **JavaScript (Vanilla)**
+- **Leaflet.js**
+- **OpenWeather API**
+- **Nominatim/OSRM**
 
----
