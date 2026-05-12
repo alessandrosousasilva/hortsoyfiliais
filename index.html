@@ -26,8 +26,6 @@
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                 <h1><img src="/logos/logo-hortsoy-ligth.png" alt="HortSoy Logo" class="company-logo"></h1>
                 <div style="display: flex; gap: 8px; align-items: center;">
-                    <button id="mobile-sidebar-toggle" class="mobile-sidebar-toggle"
-                        title="Mostrar/ocultar painel">☰</button>
                     <button id="theme-toggle" class="theme-toggle-btn" title="Alternar modo escuro/claro">
                         <i data-lucide="moon"></i>
                     </button>
@@ -56,15 +54,16 @@
 
         <div id="tab-rotas" class="tab-content">
             <div class="routing-ui">
-                <h3 style="color: var(--hortsoy-accent); margin-bottom: 15px; font-size: 1rem;">Instruções de direção</h3>
-        
+                <h3 style="color: var(--hortsoy-accent); margin-bottom: 15px; font-size: 1rem;">Instruções de direção
+                </h3>
+
                 <div class="route-inputs-wrapper" id="waypoints-container">
                     <div class="route-line" id="dynamic-route-line"></div>
                 </div>
-        
+
                 <button id="btn-add-parada" class="btn-add-stop">+ Adicionar parada</button>
                 <button id="btn-calcular-rota" class="btn-calcular">Calcular Rota</button>
-        
+
                 <div id="route-results" class="route-results" style="display: none;">
                     <div class="time-card">
                         <i data-lucide="car"></i>
