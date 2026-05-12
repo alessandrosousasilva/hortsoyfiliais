@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/OpenWeather-E96E50?style=for-the-badge&logo=openweathermap&logoColor=white" alt="OpenWeather API">
 </p>
 
-Aplicação web desenvolvida para centralizar e facilitar o acesso às localidades das filiais da HortSoy, apoiando a operação logística e administrativa.
+Aplicação Web desenvolvida para centralizar e facilitar o acesso às localidades das filiais da empresa HortSoy, com a intenção de apoiar a operação logística e administrativa.
 
 ---
 
