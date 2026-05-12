@@ -4,14 +4,13 @@
      ============================================ */
   --hortsoy-green: #2e7d32;
   --hortsoy-accent: #ffffff;
-  --bg-dark: #121212; 
+  --bg-dark: #121212;
   --sidebar-bg: #1e1e1e;
   --card-bg: #2a2a2a;
   --text-main: #e0e0e0;
-  --text-muted: #d5d5d5;
+  --text-muted: #a0a0a0;
   --modal-bg: #1e1e1e;
 
-  /* Efeitos e Variáveis Globais */
   --glass-bg: rgba(30, 30, 30, 0.75);
   --glass-border: rgba(255, 255, 255, 0.08);
   --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.2);
@@ -122,7 +121,6 @@ body {
   padding: 24px 20px;
   border-bottom: 1px solid var(--glass-border);
 }
-
 .company-logo {
   height: auto;
   width: 140px;
@@ -161,7 +159,6 @@ body {
   padding: 8px 20px 0;
   border-bottom: 1px solid var(--glass-border);
 }
-
 .tab-btn {
   flex: 1;
   display: flex;
@@ -179,7 +176,6 @@ body {
   transition: var(--transition);
   opacity: 0.7;
 }
-
 .tab-btn:hover {
   opacity: 1;
   color: var(--text-main);
@@ -242,7 +238,6 @@ body {
   color: var(--text-muted);
 }
 
-/* Scrollbar invisível */
 .tab-content::-webkit-scrollbar {
   width: 4px;
 }
@@ -265,7 +260,6 @@ body {
   position: relative;
   overflow: hidden;
 }
-
 .unit-item::before {
   content: "";
   position: absolute;
@@ -277,7 +271,6 @@ body {
   opacity: 0;
   transition: var(--transition);
 }
-
 .unit-item:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
@@ -286,7 +279,6 @@ body {
 .unit-item:hover::before {
   opacity: 1;
 }
-
 .unit-item h3 {
   font-size: 0.95rem;
   color: var(--text-main);
@@ -297,7 +289,6 @@ body {
   color: var(--text-muted);
 }
 
-/* Clima nos cards */
 .unit-weather {
   display: flex;
   align-items: center;
@@ -314,7 +305,6 @@ body {
   font-weight: 400;
 }
 
-/* Feriados */
 .unit-item.holiday {
   border-color: #f59e0b;
 }
@@ -345,8 +335,6 @@ body {
   padding-left: 24px;
   margin-bottom: 15px;
 }
-
-/* Linha pontilhada conectando os pontos */
 .route-line {
   position: absolute;
   left: 7px;
@@ -371,7 +359,6 @@ body {
   align-items: center;
   gap: 10px;
 }
-
 .route-input {
   width: 100%;
   padding: 12px 14px;
@@ -388,7 +375,6 @@ body {
   outline: none;
 }
 
-/* Ícones dos pontos */
 .route-icon {
   position: absolute;
   left: -24px;
@@ -403,15 +389,14 @@ body {
 }
 .start-icon {
   border-color: #3b82f6;
-} /* Azul suave */
+}
 .stop-icon {
   border-color: #f59e0b;
-} /* Laranja/Amarelo */
+}
 .end-icon {
   border-color: #ef4444;
-} /* Vermelho suave */
+}
 
-/* Botões de Ação do Roteirizador */
 .btn-remove-stop {
   background: rgba(239, 68, 68, 0.1);
   color: #ef4444;
@@ -462,7 +447,6 @@ body {
   filter: brightness(1.1);
 }
 
-/* Resultados da Rota */
 .route-results {
   margin-top: 25px;
   display: flex;
@@ -512,13 +496,28 @@ body {
 }
 
 /* ============================================
-   MAPA E COMPONENTES FLUTUANTES
+   MAPA, CONTROLES E COMPONENTES FLUTUANTES
    ============================================ */
 #map {
   flex: 1;
   height: 100%;
   z-index: 1;
   background: var(--bg-dark);
+}
+
+/* Botão Customizado de Menu no Mapa */
+.custom-map-toggle a {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main) !important;
+  background-color: var(--sidebar-bg) !important;
+  border-bottom: none !important;
+  transition: var(--transition);
+}
+.custom-map-toggle a:hover {
+  background-color: var(--card-bg) !important;
+  color: var(--hortsoy-green) !important;
 }
 
 /* Player de Música */
@@ -539,7 +538,6 @@ body {
   transition: var(--transition);
   transform-origin: top right;
 }
-
 #music-player:hover {
   width: 280px;
   padding: 16px;
@@ -582,7 +580,7 @@ body {
   transform: scale(1.1);
 }
 
-/* Popups do Leaflet Customizados */
+/* Popups Leaflet */
 .leaflet-popup-content-wrapper {
   background: var(--glass-bg);
   backdrop-filter: blur(8px);
@@ -612,7 +610,6 @@ body {
   font-weight: 600;
 }
 
-/* Botões dentro do Popup */
 .popup-action-buttons {
   display: flex;
   gap: 8px;
@@ -650,7 +647,7 @@ body {
   box-shadow: 0 2px 8px rgba(46, 125, 50, 0.4);
 }
 
-/* Marcadores no Mapa */
+/* Marcadores */
 .custom-div-icon {
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
@@ -661,7 +658,7 @@ body {
   z-index: 1000 !important;
 }
 
-/* Animação Gotas de Chuva */
+/* Animação Chuva */
 .rain-drops {
   position: absolute;
   top: 4px;
@@ -800,8 +797,24 @@ body {
 }
 
 /* ============================================
-   RESPONSIVO E MOBILE (BOTTOM SHEET)
+   RESPONSIVO E OCULTAÇÃO DA SIDEBAR
    ============================================ */
+/* Desktop */
+@media (min-width: 769px) {
+  body.sidebar-hidden .sidebar {
+    margin-left: -400px;
+  }
+}
+@media (min-width: 1440px) {
+  .sidebar {
+    width: 420px;
+  }
+  body.sidebar-hidden .sidebar {
+    margin-left: -420px;
+  }
+}
+
+/* Mobile */
 @media (max-width: 768px) {
   body {
     flex-direction: column;
@@ -811,7 +824,6 @@ body {
     display: none;
   }
 
-  /* Sidebar vira um Bottom Sheet */
   .sidebar {
     width: 100%;
     border-right: none;
@@ -829,6 +841,17 @@ body {
     order: 1;
   }
 
+  /* Comportamento de ocultar no celular */
+  body.sidebar-hidden .sidebar {
+    height: 0;
+    padding: 0;
+    border: none;
+    overflow: hidden;
+  }
+  body.sidebar-hidden #map {
+    height: 100vh;
+  }
+
   .sidebar-header {
     padding: 15px 20px;
     border-bottom: none;
@@ -839,25 +862,8 @@ body {
   .company-logo {
     width: 110px;
   }
-
   .mobile-sidebar-toggle {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
-    background: var(--card-bg);
-    border: 1px solid var(--glass-border);
-    color: var(--text-main);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .sidebar-collapsed .sidebar {
-    height: 70px;
-    overflow: hidden;
-  }
-  .sidebar-collapsed #map {
-    height: calc(100vh - 70px);
+    display: none !important;
   }
 
   .tabs-container {
