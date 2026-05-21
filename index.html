@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0, user-scalable=yes">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EZY4B8QDD7"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-EZY4B8QDD7');
+    </script>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2e7d32">
+    <link rel="apple-touch-icon" href="/logos/icon-192x192.png">
+
+    <title>Hortsoy | Mapa Filiais</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" type="image/x-icon" href="/logos/icons-mapa.ico">
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <h1><img src="/logos/logo-hortsoy-ligth.png" alt="HortSoy Logo" class="company-logo"></h1>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <button id="theme-toggle" class="theme-toggle-btn" title="Alternar modo escuro/claro">
+                        <i data-lucide="moon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('unidades')">
+                <i data-lucide="map-pin" style="width: 16px;"></i> Filiais
+            </button>
+            <button class="tab-btn" onclick="switchTab('rotas')">
+                <i data-lucide="route" style="width: 16px;"></i> Roteirizador
+            </button>
+        </div>
+
+        <div id="tab-unidades" class="tab-content active">
+            <div class="search-container">
+                <div class="search-wrapper">
+                    <i data-lucide="search"></i>
+                    <input type="text" id="filter" class="search-input" placeholder="Pesquisar filial...">
+                </div>
+            </div>
+            <div class="units-list" id="units-list"></div>
+        </div>
+
+        <div id="tab-rotas" class="tab-content">
+            <div class="routing-ui">
+                <h3 style="color: var(--hortsoy-accent); margin-bottom: 15px; font-size: 1rem;">Instruções de direção
+                </h3>
+
+                <div class="route-inputs-wrapper" id="waypoints-container">
+                    <div class="route-line" id="dynamic-route-line"></div>
+                </div>
+
+                <button id="btn-add-parada" class="btn-add-stop">+ Adicionar parada</button>
+                <button id="btn-calcular-rota" class="btn-calcular">Calcular Rota</button>
+
+                <div id="route-results" class="route-results" style="display: none;">
+                    <div class="time-card">
+                        <i data-lucide="car"></i>
+                        <div class="time-info">
+                            <span class="time-label">Carro</span>
+                            <span id="time-car" class="time-value">--</span>
+                        </div>
+                    </div>
+                    <div class="time-card">
+                        <i data-lucide="truck"></i>
+                        <div class="time-info">
+                            <span class="time-label">Caminhão (Estimativa)</span>
+                            <span id="time-truck" class="time-value">--</span>
+                        </div>
+                    </div>
+                    <span id="route-distance" class="route-distance"></span>
+                </div>
+            </div>
+        </div>
+
+        <div id="music-player">
+            <div class="player-info">
+                <span id="track-name">Carregando...</span>
+                <input type="range" id="progress-bar" value="0" max="100">
+            </div>
+            <div class="player-controls">
+                <button onclick="prevTrack()"><i data-lucide="skip-back"></i></button>
+                <button onclick="togglePlay()" id="play-btn"><i data-lucide="play"></i></button>
+                <button onclick="nextTrack()"><i data-lucide="skip-forward"></i></button>
+            </div>
+            <audio id="audio-element"></audio>
+        </div>
+    </aside>
+
+    <main id="map"></main>
+
+    <div id="modal-unidade" class="modal-container">
+        <div class="modal-content">
+            <span class="close-modal" onclick="fecharModal()">&times;</span>
+            <h2 id="modal-titulo" style="color: var(--hortsoy-accent); margin: 0;">Unidade</h2>
+
+            <div class="modal-tabs">
+                <button id="btn-aba-escritorio" class="modal-tab-btn active" onclick="mudarAbaFotos('escritorio')">
+                    <i data-lucide="building" style="width: 16px;"></i> Loja e Escritório
+                </button>
+                <button id="btn-aba-deposito" class="modal-tab-btn" onclick="mudarAbaFotos('deposito')">
+                    <i data-lucide="package" style="width: 16px;"></i> Estoque e Depósito
+                </button>
+            </div>
+
+            <div id="galeria-escritorio" class="galeria-grid modal-tab-content active"></div>
+            <div id="galeria-deposito" class="galeria-grid modal-tab-content"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
