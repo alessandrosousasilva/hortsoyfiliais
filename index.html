@@ -16,6 +16,7 @@
         gtag('config', 'G-EZY4B8QDD7');
     </script>
 
+    <!-- PWA Meta Tags -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2e7d32">
     <link rel="apple-touch-icon" href="/logos/icon-192x192.png">
@@ -25,6 +26,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap">
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <!-- Leaflet CSS e JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
@@ -33,13 +35,17 @@
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
     <link rel="stylesheet" href="styles.css">
+
+    <!-- Ícone da página (favicon) -->
     <link rel="shortcut icon" type="image/x-icon" href="/logos/icons-mapa.ico">
 </head>
 
 <body>
+    <!-- Barra lateral -->
     <aside class="sidebar">
         <div class="sidebar-header">
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <!-- Logo da Hortsoy -->
                 <h1><img src="/logos/logo-hortsoy-ligth.png" alt="HortSoy Logo" class="company-logo"></h1>
                 <div style="display: flex; gap: 8px; align-items: center;">
                     <button id="theme-toggle" class="theme-toggle-btn" title="Alternar modo escuro/claro">
@@ -49,6 +55,7 @@
             </div>
         </div>
 
+        <!-- Tabs para Filiais e Roteirizador -->
         <div class="tabs-container">
             <button class="tab-btn active" onclick="switchTab('unidades')">
                 <i data-lucide="map-pin" style="width: 16px;"></i> Filiais
@@ -58,6 +65,7 @@
             </button>
         </div>
 
+        <!-- Conteúdo das tabs -->
         <div id="tab-unidades" class="tab-content active">
             <div class="search-container">
                 <div class="search-wrapper">
@@ -65,14 +73,16 @@
                     <input type="text" id="filter" class="search-input" placeholder="Pesquisar filial...">
                 </div>
             </div>
+            <!-- Lista de unidades será gerada dinamicamente aqui -->
             <div class="units-list" id="units-list"></div>
         </div>
 
+        <!-- Roteirizador -->
         <div id="tab-rotas" class="tab-content">
             <div class="routing-ui">
                 <h3 style="color: var(--hortsoy-accent); margin-bottom: 15px; font-size: 1rem;">Instruções de direção
                 </h3>
-
+                <!-- Container para os inputs de rota, onde o usuário pode adicionar múltiplas paradas -->
                 <div class="route-inputs-wrapper" id="waypoints-container">
                     <div class="route-line" id="dynamic-route-line"></div>
                 </div>
@@ -80,6 +90,7 @@
                 <button id="btn-add-parada" class="btn-add-stop">+ Adicionar parada</button>
                 <button id="btn-calcular-rota" class="btn-calcular">Calcular Rota</button>
 
+                <!-- Resultado da rota -->
                 <div id="route-results" class="route-results" style="display: none;">
                     <div class="time-card">
                         <i data-lucide="car"></i>
@@ -100,11 +111,13 @@
             </div>
         </div>
 
+        <!-- Player de música -->
         <div id="music-player">
             <div class="player-info">
                 <span id="track-name">Carregando...</span>
                 <input type="range" id="progress-bar" value="0" max="100">
             </div>
+            <!-- Botões de controle -->
             <div class="player-controls">
                 <button onclick="prevTrack()"><i data-lucide="skip-back"></i></button>
                 <button onclick="togglePlay()" id="play-btn"><i data-lucide="play"></i></button>
@@ -114,22 +127,27 @@
         </div>
     </aside>
 
+    <!-- Mapa principal -->
     <main id="map"></main>
 
+    <!-- Modal de detalhes da unidade -->
     <div id="modal-unidade" class="modal-container">
         <div class="modal-content">
             <span class="close-modal" onclick="fecharModal()">&times;</span>
             <h2 id="modal-titulo" style="color: var(--hortsoy-accent); margin: 0;">Unidade</h2>
 
             <div class="modal-tabs">
+                <!-- A aba de escritório é a padrão, pois todas as unidades possuem fotos nessa categoria -->
                 <button id="btn-aba-escritorio" class="modal-tab-btn active" onclick="mudarAbaFotos('escritorio')">
                     <i data-lucide="building" style="width: 16px;"></i> Loja e Escritório
                 </button>
+                <!-- Só exibe a aba de depósito se a unidade tiver fotos nessa categoria -->
                 <button id="btn-aba-deposito" class="modal-tab-btn" onclick="mudarAbaFotos('deposito')">
                     <i data-lucide="package" style="width: 16px;"></i> Estoque e Depósito
                 </button>
             </div>
 
+            <!-- Galeria de fotos -->
             <div id="galeria-escritorio" class="galeria-grid modal-tab-content active"></div>
             <div id="galeria-deposito" class="galeria-grid modal-tab-content"></div>
         </div>

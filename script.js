@@ -7,6 +7,7 @@ function initTheme() {
   updateThemeButton(savedTheme);
 }
 
+// Alterna entre os temas claro e escuro
 function toggleTheme() {
   const html = document.documentElement;
   const newTheme =
@@ -16,6 +17,7 @@ function toggleTheme() {
   updateThemeButton(newTheme);
 }
 
+// Atualiza o ícone do botão de tema e o logo com base no tema
 function updateThemeButton(theme) {
   const btn = document.getElementById("theme-toggle");
   const logo = document.querySelector(".company-logo");
@@ -34,12 +36,14 @@ function updateThemeButton(theme) {
   }
 }
 
+// Inicializa o tema, o sistema de clima e os eventos do cursor
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
   initWeatherSystem();
   const themeBtn = document.getElementById("theme-toggle");
   if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
 
+  // Cursor personalizado para dispositivos não touch
   const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
   if (!isTouchDevice) {
     const cursor = document.createElement("div");
@@ -79,6 +83,8 @@ document.addEventListener("DOMContentLoaded", () => {
 // ============================================
 // 1. DADOS DAS UNIDADES E FERIADOS
 // ============================================
+
+// Feriados nacionais fixos (sem considerar os móveis como Carnaval, Páscoa, etc.)
 const nationalHolidays = [
   { day: "01/01", name: "Ano Novo" },
   { day: "25/12", name: "Natal" },
@@ -93,6 +99,7 @@ const nationalHolidays = [
   { day: "20/11", name: "Consciência Negra" },
 ];
 
+// Dados das unidades, incluindo feriados municipais específicos
 const unidades = [
   {
     nome: "ADM",
@@ -249,13 +256,16 @@ const unidades = [
 // ============================================
 // 2. CONFIGURAÇÃO DOS ÍCONES E MAPA
 // ============================================
+// Função para determinar se a condição climática é de chuva
 const isRainCondition = (condition) =>
   ["Rain", "Drizzle", "Thunderstorm"].includes(condition);
 
+// Função para criar ícones personalizados, incluindo alertas de feriado e efeitos de chuva
 const createIcon = (nome, color, holiday = false, weatherCondition = "") => {
   const rainy = isRainCondition(weatherCondition);
   const borderColor = holiday ? "#f59e0b" : "var(--hortsoy-green)";
 
+  // O HTML do ícone é construído dinamicamente para incluir os efeitos visuais necessários
   return L.divIcon({
     className: "custom-div-icon",
     html: `
@@ -273,11 +283,13 @@ const createIcon = (nome, color, holiday = false, weatherCondition = "") => {
   });
 };
 
+// Função para obter a chave do dia atual no formato "DD/MM"
 function getTodayKey() {
   const now = new Date();
   return `${String(now.getDate()).padStart(2, "0")}/${String(now.getMonth() + 1).padStart(2, "0")}`;
 }
 
+// Função para verificar se a unidade está em um feriado hoje, verificando primeiro os feriados municipais e depois os nacionais
 function getHolidayStatus(unit) {
   const today = getTodayKey();
   let h = unit.municipalHolidays?.find((h) => h.day === today);
@@ -288,9 +300,11 @@ function getHolidayStatus(unit) {
   return h ? { type: "Nacional", name: h.name } : null;
 }
 
+// Inicialização do mapa Leaflet, centralizado em Minas Gerais, com controle de zoom personalizado
 const map = L.map("map", { zoomControl: false }).setView([-19.7, -47.0], 8);
 L.control.zoom({ position: "topleft" }).addTo(map);
 
+// Controle personalizado para alternar a visibilidade da barra lateral, com um ícone de menu
 const SidebarToggleControl = L.Control.extend({
   options: { position: "topleft" },
   onAdd: function (map) {
@@ -310,12 +324,15 @@ const SidebarToggleControl = L.Control.extend({
     return container;
   },
 });
+
+// Adiciona o controle de alternância da barra lateral ao mapa
 map.addControl(new SidebarToggleControl());
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "© OpenStreetMap contributors",
 }).addTo(map);
 
+// Grupos de camadas para os marcadores e os círculos de chuva, permitindo fácil controle de visibilidade
 const markersGroup = L.layerGroup().addTo(map);
 const rainCircleLayer = L.layerGroup().addTo(map);
 const markers = {};
@@ -338,6 +355,7 @@ const updateCityRainLayer = (unit, condition) => {
   }
 };
 
+// Adiciona um evento de clique ao logo da empresa para centralizar o mapa na posição inicial
 const logo = document.querySelector(".company-logo");
 if (logo) {
   logo.style.cursor = "pointer";
@@ -347,6 +365,8 @@ if (logo) {
 // ============================================
 // 3. RENDERIZAÇÃO
 // ============================================
+
+// Função de renderização que atualiza a lista de unidades e os marcadores no mapa com base no filtro de pesquisa e no status de feriado
 const listElement = document.getElementById("units-list");
 const filterInput = document.getElementById("filter");
 
@@ -361,6 +381,7 @@ function render() {
         u.nome.toLowerCase().includes(term) ||
         u.endereco.toLowerCase().includes(term),
     )
+    // Para cada unidade filtrada, verifica o status de feriado, determina a cor do ícone e cria os elementos da lista e os marcadores no mapa
     .forEach((u) => {
       const holiday = getHolidayStatus(u);
       const iconColor = holiday ? "orange" : u.icone || "green";
@@ -396,69 +417,77 @@ function render() {
                 </div>`);
       markers[u.nome] = marker;
     });
+  // Após renderizar os itens e os marcadores, recria os ícones para garantir que os novos elementos sejam exibidos corretamente
   lucide.createIcons();
 }
 
+// Adiciona um evento de input ao campo de filtro para re-renderizar a lista e os marcadores sempre que o usuário digitar algo
 filterInput.addEventListener("input", render);
 render();
 
 // ============================================
-// 4. MODAL DE FOTOS (ABAS DINÂMICAS SEM LEGENDA)
+// 4. MODAL DE FOTOS
 // ============================================
+
+// Função para abrir o modal de detalhes da unidade, carregar as fotos correspondentes e registrar o evento no Google Analytics
 async function abrirDetalhes(slug, nome) {
-  if (typeof gtag === 'function') {
-      gtag('event', 'visualizar_fotos', { 'event_category': 'Filiais', 'event_label': nome });
+  if (typeof gtag === "function") {
+    gtag("event", "visualizar_fotos", {
+      event_category: "Filiais",
+      event_label: nome,
+    });
   }
 
   const modal = document.getElementById("modal-unidade");
   document.getElementById("modal-titulo").innerText = nome;
   modal.style.display = "flex";
 
-  mudarAbaFotos('escritorio');
+  mudarAbaFotos("escritorio");
 
   const carregarCategoria = async (indices, containerId) => {
-      const container = document.getElementById(containerId);
-      container.innerHTML = "";
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
 
-      indices.forEach(() => {
-          const skeleton = document.createElement("div");
-          skeleton.className = "skeleton";
-          container.appendChild(skeleton);
+    indices.forEach(() => {
+      const skeleton = document.createElement("div");
+      skeleton.className = "skeleton";
+      container.appendChild(skeleton);
+    });
+
+    const imagePromises = indices.map((i) => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.src = `fotos/${slug}/${i}.Png`;
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
       });
+    });
 
-      const imagePromises = indices.map(i => {
-          return new Promise((resolve) => {
-              const img = new Image();
-              img.src = `fotos/${slug}/${i}.Png`; 
-              img.onload = () => resolve(img);
-              img.onerror = () => resolve(null); 
-          });
+    const results = await Promise.all(imagePromises);
+    const validImages = results.filter((img) => img !== null);
+
+    container.innerHTML = "";
+
+    if (validImages.length === 0) {
+      container.innerHTML = `<p style='color: var(--text-muted); width: 100%; grid-column: 1 / -1; text-align: center; padding: 40px 0;'>Nenhuma foto disponível nesta seção.</p>`;
+    } else {
+      validImages.forEach((img) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "foto-item";
+        wrapper.appendChild(img);
+        container.appendChild(wrapper);
       });
-
-      const results = await Promise.all(imagePromises);
-      const validImages = results.filter((img) => img !== null);
-
-      container.innerHTML = "";
-
-      if (validImages.length === 0) {
-          container.innerHTML = `<p style='color: var(--text-muted); width: 100%; grid-column: 1 / -1; text-align: center; padding: 40px 0;'>Nenhuma foto disponível nesta seção.</p>`;
-      } else {
-          validImages.forEach((img) => { 
-              const wrapper = document.createElement("div");
-              wrapper.className = "foto-item";
-              wrapper.appendChild(img);
-              container.appendChild(wrapper); 
-          });
-      }
+    }
   };
 
-  // Alterado: 6 fotos para o Escritório (índices de 1 a 6)
-  carregarCategoria([1, 2, 3, 4, 5, 6], 'galeria-escritorio');
-  
-  // Alterado: 6 fotos para o Depósito (índices de 7 a 12)
-  carregarCategoria([7, 8, 9, 10, 11, 12], 'galeria-deposito');
+  // 6 fotos para o Escritório (índices de 1 a 6)
+  carregarCategoria([1, 2, 3, 4, 5, 6], "galeria-escritorio");
+
+  // 6 fotos para o Depósito (índices de 7 a 12)
+  carregarCategoria([7, 8, 9, 10, 11, 12], "galeria-deposito");
 }
 
+// Função para mudar entre as abas de fotos (Escritório e Depósito) no modal, atualizando a classe "active" para mostrar a aba selecionada
 function mudarAbaFotos(aba) {
   document
     .querySelectorAll(".modal-tab-btn")
@@ -471,6 +500,7 @@ function mudarAbaFotos(aba) {
   lucide.createIcons();
 }
 
+// Função para fechar o modal de detalhes da unidade, ocultando-o da visualização
 function fecharModal() {
   document.getElementById("modal-unidade").style.display = "none";
 }
@@ -491,10 +521,12 @@ let currentTrackIndex = 0;
 const audio = document.getElementById("audio-element");
 const playBtn = document.getElementById("play-btn");
 
+// Função para carregar a faixa atual no elemento de áudio e atualizar o nome da faixa
 function loadTrack(index) {
   audio.src = playlist[index].src;
   document.getElementById("track-name").innerText = playlist[index].name;
 }
+// Função para alternar entre reproduzir e pausar a música, atualizando o ícone do botão de reprodução de acordo
 function togglePlay() {
   if (audio.paused) {
     audio.play();
@@ -521,10 +553,13 @@ loadTrack(currentTrackIndex);
 // ============================================
 // 6. SISTEMA DE CLIMA
 // ============================================
+
+// Configurações para o sistema de clima, incluindo a chave da API do OpenWeatherMap, a chave de cache para armazenar os dados de clima e a duração do cache (30 minutos)
 const API_KEY = "2c51f53e14f402123f518b63cdf4d002";
 const WEATHER_CACHE_KEY = "hortsoy_weather_cache";
 const CACHE_DURATION = 30 * 60 * 1000;
 
+// Função para obter os dados de clima para uma determinada latitude, longitude e nome da unidade, utilizando cache para evitar chamadas excessivas à API
 async function getWeatherData(lat, lng, unitName) {
   const cache = JSON.parse(localStorage.getItem(WEATHER_CACHE_KEY) || "{}");
   const now = new Date().getTime();
@@ -545,6 +580,7 @@ async function getWeatherData(lat, lng, unitName) {
   }
 }
 
+// Mapeamento das condições climáticas para suas traduções em português e ícones correspondentes, permitindo exibir informações de clima de forma mais amigável para os usuários
 const weatherTranslations = {
   Clear: "Céu limpo",
   Clouds: "Nublado",
@@ -565,6 +601,7 @@ const weatherIcons = {
   Névoa: "🌫️",
 };
 
+// Função para atualizar as informações de clima para uma unidade específica, incluindo a temperatura, condição climática, chance de chuva e atualização dos ícones e camadas no mapa e na lista de unidades
 async function updateWeatherForUnit(unit) {
   const weatherData = await getWeatherData(unit.lat, unit.lng, unit.nome);
   if (!weatherData) return;
@@ -604,6 +641,7 @@ async function updateWeatherForUnit(unit) {
   });
 }
 
+// Função de inicialização do sistema de clima, que atualiza as informações de clima para todas as unidades ao carregar a página e define um intervalo para atualizar periodicamente as informações de clima
 async function initWeatherSystem() {
   if (!API_KEY || API_KEY === "SUA_API_KEY_AQUI") return;
   for (const unit of unidades) {
@@ -619,6 +657,8 @@ async function initWeatherSystem() {
 // ============================================
 // 7. SISTEMA DE ROTAS MÚLTIPLAS
 // ============================================
+
+// Função para alternar entre as abas do sistema de rotas, atualizando a classe "active" para mostrar a aba selecionada
 function switchTab(tabId) {
   document
     .querySelectorAll(".tab-btn")
@@ -631,10 +671,12 @@ function switchTab(tabId) {
   lucide.createIcons();
 }
 
+// Configuração do geocoder para autocompletar os endereços e variáveis para controle das rotas e contagem de waypoints
 const geocoder = L.Control.Geocoder.nominatim();
 let routingControl = null;
 let waypointCount = 0;
 
+// Função para adicionar um novo campo de waypoint para o sistema de rotas, com opções de placeholder e se o campo é removível ou não, e configurando o autocompletar para o novo campo
 function addWaypointInput(
   placeholder = "Adicionar destino",
   isRemovable = true,
@@ -642,7 +684,7 @@ function addWaypointInput(
   waypointCount++;
   const container = document.getElementById("waypoints-container");
   const inputId = `route-input-${waypointCount}`;
-
+  // O tipo de ícone é determinado com base na contagem de waypoints e se o campo é removível, para diferenciar visualmente o ponto de partida, os pontos intermediários e o destino final
   const group = document.createElement("div");
   group.className = "input-group";
   let iconClass =
@@ -658,10 +700,12 @@ function addWaypointInput(
   lucide.createIcons();
 }
 
+// Função para remover um campo de waypoint do sistema de rotas, removendo o elemento correspondente da interface
 function removeWaypoint(button) {
   button.closest(".input-group").remove();
 }
 
+// Função para configurar o autocompletar em um campo de input específico, utilizando a API do Nominatim para buscar endereços e atualizando os atributos de latitude e longitude do campo com base na seleção do usuário
 function setupAutocomplete(inputElement) {
   const parentContainer = inputElement.parentElement;
   let debounceTimer;
@@ -726,9 +770,11 @@ function setupAutocomplete(inputElement) {
   });
 }
 
+// Inicializa o sistema de rotas adicionando os campos para o ponto de partida e destino final, e configurando os eventos para adicionar paradas intermediárias e calcular a rota, incluindo o registro do evento de cálculo de rota no Google Analytics
 addWaypointInput("Escolha o ponto de partida", false);
 addWaypointInput("Escolha o destino final", false);
 
+// Evento para adicionar uma nova parada intermediária ao clicar no botão correspondente, mantendo o último campo de destino final sempre no final da lista de campos
 document.getElementById("btn-add-parada").addEventListener("click", () => {
   const container = document.getElementById("waypoints-container");
   const inputs = container.querySelectorAll(".input-group");
@@ -761,6 +807,7 @@ document.getElementById("btn-calcular-rota").addEventListener("click", () => {
     );
   if (routingControl) map.removeControl(routingControl);
 
+  // Configura o controle de roteamento com as opções desejadas, incluindo a personalização dos marcadores para o ponto de partida, paradas intermediárias e destino final, e adiciona o controle ao mapa
   routingControl = L.Routing.control({
     waypoints: waypointsArray,
     routeWhileDragging: false,
@@ -780,7 +827,9 @@ document.getElementById("btn-calcular-rota").addEventListener("click", () => {
     },
   }).addTo(map);
 
+  // Evento para quando as rotas forem encontradas, atualizando as informações de tempo e distância na interface, exibindo os resultados e ajustando a visualização do mapa para mostrar toda a rota
   routingControl.on("routesfound", function (e) {
+    // O resumo da rota é obtido a partir do resultado da rota encontrada, e a função formatTime é definida para converter o tempo total da rota em um formato legível (horas e minutos)
     const summary = e.routes[0].summary;
     const formatTime = (secs) => {
       const h = Math.floor(secs / 3600),
@@ -805,6 +854,8 @@ document.getElementById("btn-calcular-rota").addEventListener("click", () => {
 // ============================================
 // 8. SERVICE WORKER PARA PWA (INSTALAR NO CELULAR)
 // ============================================
+
+// Verifica se o navegador suporta Service Workers e, em caso afirmativo, registra o arquivo sw.js para habilitar funcionalidades de PWA, como cache offline e notificações push
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
