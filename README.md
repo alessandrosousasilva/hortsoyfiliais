@@ -16,10 +16,11 @@ Aplicação Web desenvolvida para centralizar e facilitar o acesso às localidad
 
 ## ⚙️ Funcionalidades Atuais
 
-- Listagem de todas as filiais com endereço.
+- Listagem de todas as filiais com seus endereço.
 - Cálculo de rotas com múltiplas paradas e estimativa de tempo dedicada para carros e caminhões.
 - Temperaturas e probabilidade de chuva em tempo real.
-- Visualizador de fotos de cada unidade.
+- Visualizador de imagens de cada unidade.
 - Modo Claro/Escuro.
+- Player de música
 
 ---

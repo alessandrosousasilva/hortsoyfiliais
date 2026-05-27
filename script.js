@@ -7,7 +7,7 @@ function initTheme() {
   updateThemeButton(savedTheme);
 }
 
-// Alterna entre os temas claro e escuro
+// Alternação entre os temas claro e escuro
 function toggleTheme() {
   const html = document.documentElement;
   const newTheme =
@@ -36,14 +36,14 @@ function updateThemeButton(theme) {
   }
 }
 
-// Inicializa o tema, o sistema de clima e os eventos do cursor
+// Inicializa o tema, o sistema de clima e o cursor
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
   initWeatherSystem();
   const themeBtn = document.getElementById("theme-toggle");
   if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
 
-  // Cursor personalizado para dispositivos não touch
+  // Cursor personalizado para desktop
   const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
   if (!isTouchDevice) {
     const cursor = document.createElement("div");
@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // 1. DADOS DAS UNIDADES E FERIADOS
 // ============================================
 
-// Feriados nacionais fixos (sem considerar os móveis como Carnaval, Páscoa, etc.)
+// Feriados nacionais fixos
 const nationalHolidays = [
   { day: "01/01", name: "Ano Novo" },
   { day: "25/12", name: "Natal" },
@@ -265,7 +265,7 @@ const createIcon = (nome, color, holiday = false, weatherCondition = "") => {
   const rainy = isRainCondition(weatherCondition);
   const borderColor = holiday ? "#f59e0b" : "var(--hortsoy-green)";
 
-  // O HTML do ícone é construído dinamicamente para incluir os efeitos visuais necessários
+  // O HTML do ícone é construído dinamicamente para incluir os efeitos visuais
   return L.divIcon({
     className: "custom-div-icon",
     html: `

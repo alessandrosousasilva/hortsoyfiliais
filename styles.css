@@ -79,7 +79,7 @@ body {
 }
 
 /* ============================================
-   CURSOR CUSTOMIZADO (DESKTOP APENAS)
+   CURSOR CUSTOMIZADO (PARA DESKTOP APENAS)
    ============================================ */
 .cursor-dot {
   position: fixed;
@@ -158,7 +158,7 @@ body {
 }
 
 /* ============================================
-   ABAS DE NAVEGAÇÃO (TABS)
+   ABAS DE NAVEGAÇÃO
    ============================================ */
 .tabs-container {
   display: flex;
@@ -818,7 +818,7 @@ body {
   border-radius: 8px 8px 0 0;
 }
 
-/* Secção 2: Conteúdo das Abas e Grelha Blindada */
+/* Secção 2: Conteúdo das Abas e Grelha */
 .modal-tab-content {
   display: none !important;
 }
@@ -886,7 +886,7 @@ body {
 }
 
 /* ============================================
-   RESPONSIVO (MOBILE BOTTOM SHEET)
+   RESPONSIVO (MOBILE)
    ============================================ */
 @media (max-width: 768px) {
   body {
