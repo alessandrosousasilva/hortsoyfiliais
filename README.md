@@ -10,17 +10,17 @@
   <img src="https://img.shields.io/badge/OpenWeather-E96E50?style=for-the-badge&logo=openweathermap&logoColor=white" alt="OpenWeather API">
 </p>
 
-Aplicação Web desenvolvida para centralizar e facilitar o acesso às localidades das filiais da empresa HortSoy, com a intenção de apoiar a operação logística e administrativa.
+<br>
+
+Mapa Logístico desenvolvido para a **HortSoy**. Aplicação Web desenvolvida para centralizar e facilitar o acesso às localidades, com a intenção de apoiar a operação logística e administrativa.
 
 ---
 
-## ⚙️ Funcionalidades Atuais
+## ⚙️ Funcionalidades
 
-- Listagem de todas as filiais com seus endereço.
-- Cálculo de rotas com múltiplas paradas e estimativa de tempo dedicada para carros e caminhões.
-- Temperaturas e probabilidade de chuva em tempo real.
-- Visualizador de imagens de cada unidade.
-- Modo Claro/Escuro.
-- Player de música
+- 📍 **Mapeamento Inteligente:** Listagem interativa de todas as filiais, com alertas de feriados municipais e nacionais.
+- 🛣️ **Roteirizador Logístico:** Motor de cálculo de rotas com múltiplas paradas. Gera traçados no mapa e estimativas de tempo para carros e caminhões.
+- ⛅ **Monitoramento Climático:** Integração com a API do *OpenWeather* para exibir a temperatura atual e a probabilidade de chuva nas unidades em tempo real.
+- 📸 **Auditoria Visual de Infraestrutura:** Modal de galeria exibindo imagens  divididas entre os setores de **Loja/Escritório** e **Estoque/Depósito**.
 
 ---
