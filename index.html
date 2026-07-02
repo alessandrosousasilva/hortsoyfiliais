@@ -87,6 +87,22 @@
                 </div>
 
                 <button id="btn-add-parada" class="btn-add-stop">+ Adicionar parada</button>
+
+                <div class="input-group vehicle-selector" style="margin-bottom: 15px;">
+                    <i data-lucide="truck" class="route-icon"
+                        style="background: transparent; border: none; color: var(--text-muted);"></i>
+                    <select id="tipo-veiculo" class="route-input" style="cursor: pointer;">
+                        <option value="carro">Carro de Passeio / Utilitário leve</option>
+                        <option value="caminhao-2">Caminhão Toco (2 Eixos)</option>
+                        <option value="caminhao-3">Caminhão Truck (3 Eixos)</option>
+                        <option value="caminhao-4">Carreta (4 Eixos)</option>
+                        <option value="caminhao-5">Carreta (5 Eixos)</option>
+                        <option value="caminhao-6">Carreta (6 Eixos)</option>
+                        <option value="caminhao-7">Carreta Bitrem (7 Eixos)</option>
+                        <option value="caminhao-9">Rodotrem (9 Eixos)</option>
+                    </select>
+                </div>
+
                 <button id="btn-calcular-rota" class="btn-calcular">Calcular Rota</button>
 
                 <!-- Resultado da rota -->
@@ -105,6 +121,21 @@
                             <span id="time-truck" class="time-value">--</span>
                         </div>
                     </div>
+
+                    <!-- NOVO: CAIXINHA DO PEDÁGIO -->
+                    <div id="toll-card" class="time-card"
+                        style="display: none; border-left: 3px solid #ef4444; margin-top: 10px;">
+                        <div
+                            style="background: rgba(239, 68, 68, 0.15); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 12px; border: 1px solid rgba(239, 68, 68, 0.3);">
+                            <span style="color: #ef4444; font-weight: 900; font-size: 16px;">$</span>
+                        </div>
+                        <div class="time-info">
+                            <span class="time-label" id="toll-count-label">Pedágios (0)</span>
+                            <span id="toll-total-cost" class="time-value" style="color: #ef4444;">R$ 0,00</span>
+                        </div>
+                    </div>
+                    <!-- FIM DA CAIXINHA DO PEDÁGIO -->
+
                     <span id="route-distance" class="route-distance"></span>
                 </div>
             </div>

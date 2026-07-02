@@ -655,6 +655,238 @@ async function initWeatherSystem() {
 }
 
 // ============================================
+// SISTEMA DE PEDÁGIOS - HORTSOY LOGÍSTICA
+// ============================================
+
+// 1. Tabela de Multiplicadores por Veículo/Eixo
+const multiplicadoresEixo = {
+  carro: 1, // Carro de passeio (Tarifa Base)
+  "caminhao-2": 2, // Caminhão Leve / Toco (2 Eixos Comerciais)
+  "caminhao-3": 3, // Caminhão Truck (3 Eixos)
+  "caminhao-4": 4, // Carreta (4 Eixos)
+  "caminhao-5": 5, // Carreta (5 Eixos)
+  "caminhao-6": 6, // Carreta (6 Eixos)
+  "caminhao-7": 7, // Carreta (7 Eixos / Bitrem)
+  "caminhao-9": 9, // Rodotrem (9 Eixos)
+};
+
+// 2. O seu Banco de Dados Local
+// As coordenadas (lat, lng) precisam de estar exatamente em cima da estrada
+const pedagiosHortsoy = [
+  {
+    nome: "Pedágio P06 - DELTA",
+    concessionaria: "Eco050",
+    site: "https://www.eco050.com.br/tarifas",
+    lat: -19.915257954725643,
+    lng: -47.82948948650025,
+    tarifaBase: 5.6,
+  },
+  {
+    nome: "Pedágio 06 Nova Ponte - EPR Triângulo",
+    concessionaria: "EPR Triângulo",
+    site: "https://eprtriangulo.com.br/pedagios/",
+    lat: -19.479545992343954,
+    lng: -47.728837169729324,
+    tarifaBase: 14.0,
+  },
+  {
+    nome: "Pedágio BSO3 - Araguari",
+    concessionaria: "EPR Triângulo",
+    site: "https://eprtriangulo.com.br/pedagios/",
+    lat: -18.74982204093876,
+    lng: -48.23553484022828,
+    tarifaBase: 14.0,
+  },
+  {
+    nome: "Pedágio 5 - Uberaba (EPR)",
+    concessionaria: "EPR Triângulo",
+    site: "https://eprtriangulo.com.br/pedagios/",
+    lat: -19.16420339263457,
+    lng: -48.16001477202815,
+    tarifaBase: 14.0,
+  },
+  {
+    nome: "Pedágio PP08 - Água Comprida",
+    concessionaria: "EPR Triângulo",
+    site: "https://eprtriangulo.com.br/pedagios/",
+    lat: -19.854814411868073,
+    lng: -48.07350310005128,
+    tarifaBase: 14.0,
+  },
+  {
+    nome: "Pedágio P5 - Campo Florido",
+    concessionaria: "Triunfo Concebra",
+    site: "https://www.triunfoconcebra.com.br/tarifas",
+    lat: -19.76648597496079,
+    lng: -48.45859337158139,
+    tarifaBase: 14.0,
+  },
+  {
+    nome: "Pedágio Perdizes (BR-262)",
+    concessionaria: "Triunfo Concebra",
+    site: "https://www.triunfoconcebra.com.br/tarifas",
+    lat: -19.617522763312174,
+    lng: -47.346529435259924,
+    tarifaBase: 14.0,
+  },
+  {
+    nome: "Pedágio PP02 - Perdizes",
+    concessionaria: "EPR Triângulo",
+    site: "https://eprtriangulo.com.br/pedagios/",
+    lat: -19.40488438139286,
+    lng: -47.31450917105401,
+    tarifaBase: 14.0,
+  },
+  {
+    nome: "Pedágio PP05 - Patrocínio",
+    concessionaria: "EPR Triângulo",
+    site: "https://eprtriangulo.com.br/pedagios/",
+    lat: -19.133693408195303,
+    lng: -47.17416879377944,
+    tarifaBase: 14.0,
+  },
+  {
+    nome: "Pedágio Eletronico Ibiá",
+    concessionaria: "Triunfo Concebra",
+    site: "https://www.triunfoconcebra.com.br/tarifas",
+    lat: -19.546583163010943,
+    lng: -46.84458686807472,
+    tarifaBase: 9.52,
+  },
+  {
+    nome: "Pedágio Campos Altos",
+    concessionaria: "Triunfo Concebra",
+    site: "https://www.triunfoconcebra.com.br/tarifas",
+    lat: -19.62992505182369,
+    lng: -46.239191431094454,
+    tarifaBase: 10.0,
+  },
+  {
+    nome: "Pedágio Corrego Fundo",
+    concessionaria: "AB Nascentes das Gerais",
+    site: "https://abnascentesdasgerais.com.br/tarifas/",
+    lat: -20.462717034826266,
+    lng: -45.59028051846279,
+    tarifaBase: 8.8,
+  },
+  {
+    nome: "Pedágio Piumhi",
+    concessionaria: "AB Nascentes das Gerais",
+    site: "https://abnascentesdasgerais.com.br/tarifas/",
+    lat: -20.511803051833375,
+    lng: -45.97411787186391,
+    tarifaBase: 8.8,
+  },
+  {
+    nome: "Pedágio Passos",
+    concessionaria: "AB Nascentes das Gerais",
+    site: "https://abnascentesdasgerais.com.br/tarifas/",
+    lat: -20.723466807394626,
+    lng: -46.401960231162555,
+    tarifaBase: 8.8,
+  },
+  {
+    nome: "Pedágio PP03 - Monte Carmelo",
+    concessionaria: "EPR Triângulo",
+    site: "https://eprtriangulo.com.br/pedagios/",
+    lat: -18.889625542069595,
+    lng: -47.33836935113929,
+    tarifaBase: 14.0,
+  },
+  {
+    nome: "Pedágio PP04 - Indianópolis",
+    concessionaria: "EPR Triângulo",
+    site: "https://eprtriangulo.com.br/pedagios/",
+    lat: -18.841571066919688,
+    lng: -48.01831794553309,
+    tarifaBase: 14.0,
+  },
+  {
+    nome: "Pedágio PP 02 - Boa Esperança",
+    concessionaria: "EPR Sul de Minas",
+    site: "https://eprsuldeminas.com.br/pedagios/",
+    lat: -21.10901402954214,
+    lng: -45.575034916370946,
+    tarifaBase: 15.0,
+  },
+  {
+    nome: "Pedágio PP 05 - Alfenas",
+    concessionaria: "EPR Sul de Minas",
+    site: "https://eprsuldeminas.com.br/pedagios/",
+    lat: -21.432851831682257,
+    lng: -46.098140851693984,
+    tarifaBase: 15.0,
+  },
+  {
+    nome: "Pedágio P2 Sales Oliveira",
+    concessionaria: "Entrevias",
+    site: "https://www.entrevias.com.br/tarifas-de-pedagio/",
+    lat: -20.850774955421436,
+    lng: -47.89525451146437,
+    tarifaBase: 14.3,
+  },
+  {
+    nome: "Pedágio P1 Ituverava",
+    concessionaria: "Entrevias",
+    site: "https://www.entrevias.com.br/tarifas-de-pedagio/",
+    lat: -20.37348291000833,
+    lng: -47.81373858760028,
+    tarifaBase: 17.3,
+  },
+  {
+    nome: "Pedágio 07 - EPR Triângulo",
+    concessionaria: "EPR Triângulo",
+    site: "https://eprtriangulo.com.br/pedagios/",
+    lat: -19.012975885681325,
+    lng: -47.572272949622075,
+    tarifaBase: 14.0,
+  },
+  {
+    nome: "Pedágio 03 - EPR Triângulo",
+    concessionaria: "EPR Triângulo",
+    site: "https://eprtriangulo.com.br/pedagios/",
+    lat: -18.914526344413584,
+    lng: -47.33833452881616,
+    tarifaBase: 14.0,
+  },
+  {
+    nome: "Pedágio 2 - Lagoa Grande",
+    concessionaria: "Via040",
+    site: "https://www.via040.com.br/tarifas/",
+    lat: -17.489882797266805,
+    lng: -46.56519811492962,
+    tarifaBase: 17.3,
+  },
+  {
+    nome: "Pedágio 1 - Paracatu",
+    concessionaria: "Via040",
+    site: "https://www.via040.com.br/tarifas/",
+    lat: -17.092506444168936,
+    lng: -47.026832068747716,
+    tarifaBase: 17.3,
+  },
+  {
+    nome: "Pedágio 1 - Ipameri",
+    concessionaria: "Eco050",
+    site: "https://www.eco050.com.br/tarifas",
+    lat: -17.060013391677412,
+    lng: -47.71546737230921,
+    tarifaBase: 17.3,
+  },
+  {
+    nome: "Pedágio 01 Uberaba - EPR Triângulo",
+    concessionaria: "EPR Triângulo",
+    site: "https://eprtriangulo.com.br/pedagios/",
+    lat: -19.188798315971763,
+    lng: -47.853555704865855,
+    tarifaBase: 14.0,
+  },
+];
+
+// Variável para guardar os marcadores vermelhos de pedágio no mapa
+let pedagiosMarkersLayer = L.layerGroup().addTo(map);
+
+// ============================================
 // 7. SISTEMA DE ROTAS MÚLTIPLAS
 // ============================================
 
@@ -848,14 +1080,93 @@ document.getElementById("btn-calcular-rota").addEventListener("click", () => {
     document.getElementById("route-results").style.display = "flex";
     lucide.createIcons();
     map.fitBounds(L.latLngBounds(waypointsArray), { padding: [50, 50] });
-  });
-});
+
+    // ATENÇÃO: Colocar dentro do evento routingControl.on('routesfound', function(e) { ... })
+
+    const rota = e.routes[0];
+    const coordenadasRota = rota.coordinates;
+    const tipoVeiculo = document.getElementById("tipo-veiculo").value;
+    const multiplicador = multiplicadoresEixo[tipoVeiculo];
+
+    let custoTotalPedagio = 0;
+    let quantidadePedagios = 0;
+    pedagiosMarkersLayer.clearLayers(); // Limpa pedágios antigos de rotas anteriores
+
+    // Verifica cada pedágio do nosso banco de dados
+    pedagiosHortsoy.forEach((pedagio) => {
+      const pontoPedagio = L.latLng(pedagio.lat, pedagio.lng);
+
+      let vezesPassou = 0;
+      let dentroDoRaio = false;
+
+      // Analisa cada pedacinho da linha azul para contar quantas vezes cruzou o pedágio (Ida e Volta)
+      coordenadasRota.forEach((coord) => {
+        const distancia = coord.distanceTo(pontoPedagio);
+
+        if (distancia < 2500) {
+          // Entrou no raio do pedágio
+          if (!dentroDoRaio) {
+            vezesPassou++;
+            dentroDoRaio = true;
+          }
+        } else if (distancia > 3500) {
+          // Saiu de perto (margem de 3.5km). Prepara para poder contar de novo se voltar!
+          dentroDoRaio = false;
+        }
+      });
+
+      if (vezesPassou > 0) {
+        // Faz a conta: Valor Base * Quantidade de Eixos * Quantas vezes passou no mesmo pedágio
+        const custoVeiculo = pedagio.tarifaBase * multiplicador * vezesPassou;
+        custoTotalPedagio += custoVeiculo;
+        quantidadePedagios += vezesPassou;
+
+        // Cria o marcador vermelho com o cifrão no mapa (e o badge "2x" se for ida e volta)
+        const pedagioIcon = L.divIcon({
+          className: "custom-div-icon",
+          html: `
+              <div style="background: #ef4444; width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); position: relative;">
+                <span style="color: white; font-weight: 900; font-size: 14px;">$</span>
+                ${vezesPassou > 1 ? `<div style="position: absolute; top: -8px; right: -8px; background: #fbbf24; color: black; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; font-weight: bold; display: flex; justify-content: center; align-items: center; border: 1px solid white; z-index: 10;">${vezesPassou}x</div>` : ""}
+              </div>`,
+          iconSize: [24, 24],
+          iconAnchor: [12, 12],
+        });
+
+        // Adiciona ao mapa com um popup detalhado
+        L.marker([pedagio.lat, pedagio.lng], { icon: pedagioIcon })
+          .bindPopup(
+            `<div style="text-align: center;">
+                <b style="color: #ef4444;">${pedagio.nome}</b><br>
+                <span style="font-size: 12px; color: var(--text-muted);">
+                  ${vezesPassou > 1 ? `<strong style="color: #fbbf24;">Cruzou ${vezesPassou} vezes (Ida e Volta)</strong><br>` : ""}
+                  Custo neste veículo:
+                </span><br>
+                <b style="font-size: 14px;">R$ ${custoVeiculo.toFixed(2).replace(".", ",")}</b>
+             </div>`,
+          )
+          .addTo(pedagiosMarkersLayer);
+      }
+    });
+
+    // ATUALIZA A INTERFACE VISUAL EM VEZ DO CONSOLE
+    const tollCard = document.getElementById("toll-card");
+
+    if (quantidadePedagios > 0) {
+      document.getElementById("toll-count-label").innerText =
+        `Pedágios (${quantidadePedagios})`;
+      document.getElementById("toll-total-cost").innerText =
+        `R$ ${custoTotalPedagio.toFixed(2).replace(".", ",")}`;
+      tollCard.style.display = "flex";
+    } else {
+      tollCard.style.display = "none"; // Esconde se a rota não tiver pedágio
+    }
+  }); // Fim do evento routesfound
+}); // <-- AQUI! ESTAVA A FALTAR FECHAR O CLIQUE DO BOTÃO "CALCULAR ROTA"
 
 // ============================================
 // 8. SERVICE WORKER PARA PWA (INSTALAR NO CELULAR)
 // ============================================
-
-// Verifica se o navegador suporta Service Workers e, em caso afirmativo, registra o arquivo sw.js para habilitar funcionalidades de PWA, como cache offline e notificações push
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
