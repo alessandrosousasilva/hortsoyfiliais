@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="/logos/logo-hortsoy-ligth.png" alt="Logo Hortsoy" width="300"/>
+  <img src="logos/logo-hortsoy-ligth.png" alt="Logo Hortsoy" width="300"/>
 </p>
 
 <p align="center">
@@ -12,15 +12,18 @@
 
 <br>
 
-Mapa Logístico desenvolvido para a **HortSoy**. Aplicação Web desenvolvida para centralizar e facilitar o acesso às localidades, com a intenção de apoiar a operação logística e administrativa.
+Painel Logístico desenvolvido para a **HortSoy**. A aplicação centraliza os dados de infraestrutura das filiais, fornecendo ferramentas avançadas de mapeamento para apoiar as operações logísticas.
 
 ---
 
 ## ⚙️ Funcionalidades
 
-- 📍 **Mapeamento Inteligente:** Listagem interativa de todas as filiais, com alertas de feriados municipais e nacionais.
-- 🛣️ **Roteirizador Logístico:** Motor de cálculo de rotas com múltiplas paradas. Gera traçados no mapa e estimativas de tempo para carros e caminhões.
-- ⛅ **Monitoramento Climático:** Integração com a API do *OpenWeather* para exibir a temperatura atual e a probabilidade de chuva nas unidades em tempo real.
-- 📸 **Auditoria Visual de Infraestrutura:** Modal de galeria exibindo imagens  divididas entre os setores de **Loja/Escritório** e **Estoque/Depósito**.
+- 📍 **Mapeamento Inteligente:** Listagem interativa de todas as filiais, com alertas automáticos de feriados municipais e nacionais.
+- 🛣️ **Roteirizador Logístico e Financeiro (v2.0.5):** Motor de cálculo de rotas com múltiplas paradas. Gera traçados no mapa e estimativas de tempo segmentadas. Inclui um **Módulo de Pedágios Inteligente**:
+  - Cálculo automatizado de custos baseado na quantidade de eixos (de carros de passeio a rodotrens de 9 eixos).
+  - Algoritmo de deteção de trajetos de ida e volta, rastreando cruzamentos múltiplos na mesma praça.
+- ⛅ **Monitoramento Climático:** Integração com a API do _OpenWeather_ para exibir a temperatura atual e a probabilidade de chuva nas unidades em tempo real.
+- 📸 **Auditoria Visual de Infraestrutura:** Modal de galeria responsivo (com sistema de abas e proteção de _CSS Grid_), exibindo imagens padronizadas e divididas entre os setores de **Loja/Escritório** e **Estoque/Depósito**.
+- 🎵 **Player Integrado:** Reprodutor de áudio para melhorar a experiência durante o uso.
 
 ---
