@@ -998,3 +998,53 @@ body {
     flex-direction: row;
   }
 }
+
+/* =========================================
+   MELHORIAS MOBILE - UI E ROTEIRIZADOR
+   ========================================= */
+@media (max-width: 768px) {
+  /* 1. Garante que o menu lateral rola suavemente no telemóvel */
+  .sidebar {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 2. Adiciona um respiro grande no fundo para poder rolar a tela além do botão */
+  .tab-content {
+    padding-bottom: 120px !important;
+    overflow-y: visible !important;
+  }
+
+  /* 3. Desfaz a colagem do botão e dá-lhe espaço adequado */
+  .btn-calcular {
+    position: relative !important;
+    bottom: auto !important;
+    margin-top: 25px !important;
+    margin-bottom: 20px !important;
+    z-index: 10 !important;
+    width: 100% !important;
+  }
+
+  /* 4. Transforma o player de música num botão flutuante discreto no canto inferior direito da TELA (fora do menu) */
+  #music-player {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    width: auto !important;
+    padding: 10px 15px !important;
+    border-radius: 30px !important;
+    z-index: 9999 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
+    left: auto !important;
+  }
+
+  /* 5. Esconde o nome da música e a barra de progresso no mobile para poupar espaço */
+  #music-player .player-info {
+    display: none !important;
+  }
+
+  /* 6. Espaçamento extra entre os campos de origem e destino para facilitar o toque */
+  .input-group {
+    margin-bottom: 15px !important;
+  }
+}
