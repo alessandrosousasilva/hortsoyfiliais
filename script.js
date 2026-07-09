@@ -727,7 +727,7 @@ const pedagiosHortsoy = [
     site: "https://www.triunfoconcebra.com.br/tarifas",
     lat: -19.617522763312174,
     lng: -47.346529435259924,
-    tarifaBase: 14.0,
+    tarifaBase: 10.3,
   },
   {
     nome: "Pedágio PP02 - Perdizes",
@@ -751,7 +751,7 @@ const pedagiosHortsoy = [
     site: "https://www.triunfoconcebra.com.br/tarifas",
     lat: -19.546583163010943,
     lng: -46.84458686807472,
-    tarifaBase: 9.52,
+    tarifaBase: 9.5,
   },
   {
     nome: "Pedágio Campos Altos",
@@ -767,7 +767,7 @@ const pedagiosHortsoy = [
     site: "https://abnascentesdasgerais.com.br/tarifas/",
     lat: -20.462717034826266,
     lng: -45.59028051846279,
-    tarifaBase: 8.8,
+    tarifaBase: 9.1,
   },
   {
     nome: "Pedágio Piumhi",
@@ -775,7 +775,7 @@ const pedagiosHortsoy = [
     site: "https://abnascentesdasgerais.com.br/tarifas/",
     lat: -20.511803051833375,
     lng: -45.97411787186391,
-    tarifaBase: 8.8,
+    tarifaBase: 9.1,
   },
   {
     nome: "Pedágio Passos",
@@ -783,7 +783,7 @@ const pedagiosHortsoy = [
     site: "https://abnascentesdasgerais.com.br/tarifas/",
     lat: -20.723466807394626,
     lng: -46.401960231162555,
-    tarifaBase: 8.8,
+    tarifaBase: 9.1,
   },
   {
     nome: "Pedágio PP03 - Monte Carmelo",
@@ -823,7 +823,7 @@ const pedagiosHortsoy = [
     site: "https://www.entrevias.com.br/tarifas-de-pedagio/",
     lat: -20.850774955421436,
     lng: -47.89525451146437,
-    tarifaBase: 14.3,
+    tarifaBase: 15.05,
   },
   {
     nome: "Pedágio P1 Ituverava",
@@ -831,7 +831,7 @@ const pedagiosHortsoy = [
     site: "https://www.entrevias.com.br/tarifas-de-pedagio/",
     lat: -20.37348291000833,
     lng: -47.81373858760028,
-    tarifaBase: 17.3,
+    tarifaBase: 18.2,
   },
   {
     nome: "Pedágio 07 - EPR Triângulo",
