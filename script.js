@@ -256,6 +256,7 @@ const unidades = [
 // ============================================
 // 2. CONFIGURAÇÃO DOS ÍCONES E MAPA
 // ============================================
+
 // Função para determinar se a condição climática é de chuva
 const isRainCondition = (condition) =>
   ["Rain", "Drizzle", "Thunderstorm"].includes(condition);
@@ -580,7 +581,7 @@ async function getWeatherData(lat, lng, unitName) {
   }
 }
 
-// Mapeamento das condições climáticas para suas traduções em português e ícones correspondentes, permitindo exibir informações de clima de forma mais amigável para os usuários
+// Mapeamento das condições climáticas para suas traduções em português e ícones correspondentes
 const weatherTranslations = {
   Clear: "Céu limpo",
   Clouds: "Nublado",
@@ -1273,8 +1274,6 @@ document.getElementById("btn-calcular-rota").addEventListener("click", () => {
     lucide.createIcons();
     map.fitBounds(L.latLngBounds(waypointsArray), { padding: [50, 50] });
 
-    // ATENÇÃO: Colocar dentro do evento routingControl.on('routesfound', function(e) { ... })
-
     const rota = e.routes[0];
     const coordenadasRota = rota.coordinates;
     const tipoVeiculo = document.getElementById("tipo-veiculo").value;
@@ -1354,7 +1353,7 @@ document.getElementById("btn-calcular-rota").addEventListener("click", () => {
       tollCard.style.display = "none"; // Esconde se a rota não tiver pedágio
     }
   }); // Fim do evento routesfound
-}); // <-- AQUI! ESTAVA A FALTAR FECHAR O CLIQUE DO BOTÃO "CALCULAR ROTA"
+});
 
 // ============================================
 // 8. SERVICE WORKER PARA PWA (INSTALAR NO CELULAR)
