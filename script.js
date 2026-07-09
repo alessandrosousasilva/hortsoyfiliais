@@ -1042,12 +1042,28 @@ const pedagiosHortsoy = [
     tarifaBase: 17.3,
   },
   {
+    nome: "Pedágio 1 - Paracatu",
+    concessionaria: "Via040",
+    site: "https://www.via040.com.br/tarifas/",
+    lat: -17.09817574733903,
+    lng: -47.026096726911575,
+    tarifaBase: 11.3,
+  },
+  {
     nome: "Pedágio 1 - Ipameri",
     concessionaria: "Eco050",
     site: "https://www.eco050.com.br/tarifas",
     lat: -17.060013391677412,
     lng: -47.71546737230921,
     tarifaBase: 17.3,
+  },
+  {
+    nome: "Pedágio 1 - P02 - CAMPO ALEGRE",
+    concessionaria: "Eco050",
+    site: "https://www.eco050.com.br/tarifas",
+    lat: -17.772029859886693,
+    lng: -47.74991864307174,
+    tarifaBase: 9.6,
   },
   {
     nome: "Pedágio 01 Uberaba - EPR Triângulo",
