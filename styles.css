@@ -526,28 +526,36 @@ body {
   color: var(--hortsoy-green) !important;
 }
 
+/* ============================================
+   NOVO FORMATO DO PLAYER (RODAPÉ DA SIDEBAR)
+   ============================================ */
 #music-player {
-  top: 665px;
-  left: 1405px;
-  z-index: 1000;
-  width: 300px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  box-shadow: var(--shadow-md);
+  margin-top: auto;
+  width: 100%;
+  background: var(--card-bg);
+  border-top: 1px solid var(--glass-border);
+  padding: 16px 20px;
   text-align: center;
   transition: var(--transition);
-  transform-origin: top right;
-  position: absolute;
+  z-index: 10;
+
+  /* Removemos as propriedades antigas de flutuação */
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 #music-player:hover {
-  width: 300px;
-  padding: 5px;
-  background: var(--card-bg);
-  border-color: var(--hortsoy-green);
+  background: var(--sidebar-bg);
+  border-color: var(--glass-border);
+  padding: 16px 20px;
+  width: 100%;
 }
 
 .player-info #track-name {
