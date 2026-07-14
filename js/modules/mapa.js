@@ -387,29 +387,21 @@ async function updateWeatherForUnit(unit) {
   const temp = Math.round(weatherData.main.temp);
   let condition = weatherData.weather[0].main;
 
+  // Extrai o volume real de água
   let rainVol = 0;
   if (weatherData.rain && weatherData.rain["1h"]) {
     rainVol = weatherData.rain["1h"];
   }
 
+  // Filtro anti-bug: se a API disser "chuva" mas o volume for menor que 0.2mm (neblina invisível), nós zeramos.
   if ((condition === "Rain" || condition === "Drizzle") && rainVol < 0.2) {
-    condition = weatherData.clouds.all > 40 ? "Clouds" : "Clear";
-    rainVol = 0; // Zera o volume para não disparar os 100%
+    condition =
+      weatherData.clouds && weatherData.clouds.all > 40 ? "Clouds" : "Clear";
+    rainVol = 0;
   }
 
   const conditionPt = weatherTranslations[condition] || condition;
   const icon = weatherIcons[conditionPt] || "🌤️";
-
-  let rainChance = 0;
-  if (weatherData.pop !== undefined) {
-    rainChance = Math.round(weatherData.pop * 100);
-  } else if (rainVol >= 0.2) {
-    // Se realmente estiver a chover, a umidade relativa dita a percentagem (ex: 85%)
-    rainChance = Math.min(Math.round(weatherData.main.humidity), 99);
-  } else if (condition === "Clouds" && weatherData.main.humidity > 70) {
-    // Se estiver nublado e abafado, calcula uma chance baixa (ex: 80% umidade = 32% chance)
-    rainChance = Math.round(weatherData.main.humidity * 0.4);
-  }
 
   unit.weatherCondition = condition;
   const holiday = getHolidayStatus(unit);
@@ -431,13 +423,10 @@ async function updateWeatherForUnit(unit) {
         item.appendChild(weatherDiv);
       }
 
+      // Cria o HTML da chuva apenas se houver volume real de água
       let rainHTML = "";
-      if (rainChance > 0 || rainVol > 0) {
-        rainHTML = `<span class="weather-rain">💧 ${rainChance}%`;
-        if (rainVol > 0) {
-          rainHTML += ` (${rainVol.toFixed(1)}mm)`;
-        }
-        rainHTML += `</span>`;
+      if (rainVol > 0) {
+        rainHTML = `<span class="weather-rain">💧 ${rainVol.toFixed(1)}mm</span>`;
       }
 
       weatherDiv.innerHTML = `<span class="weather-icon">${icon}</span><span class="weather-temp">${temp}°C</span><span class="weather-condition">${conditionPt}</span>${rainHTML}`;
