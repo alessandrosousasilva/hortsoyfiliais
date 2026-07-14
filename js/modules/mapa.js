@@ -230,16 +230,21 @@ export function iniciarMapa() {
   // 2. Definimos qual mapa aparece como padrão ao carregar a página
   mapaRuas.addTo(map);
 
-  // 3. objeto que vai alimentar o menu (Nome no Menu : Variável da Camada)
+  // 3. Criamos o objeto que vai alimentar o menu (Agora com HTML embutido!)
   const mapasBase = {
-    "Padrão (Voyager)": mapaVoyager,
-    "GPS (Esri Ruas)": mapaRuas,
-    "Satélite (Esri)": mapaSatelite,
-    "Modo Escuro (Carto)": mapaEscuro,
-    "Modo Claro (Carto)": mapaClaro,
+    "<div class='map-option'><div class='map-thumb thumb-voyager'></div><span>Padrão</span></div>":
+      mapaVoyager,
+    "<div class='map-option'><div class='map-thumb thumb-ruas'></div><span>GPS</span></div>":
+      mapaRuas,
+    "<div class='map-option'><div class='map-thumb thumb-satelite'></div><span>Satélite</span></div>":
+      mapaSatelite,
+    "<div class='map-option'><div class='map-thumb thumb-escuro'></div><span>Escuro</span></div>":
+      mapaEscuro,
+    "<div class='map-option'><div class='map-thumb thumb-claro'></div><span>Claro</span></div>":
+      mapaClaro,
   };
 
-  // 4. Controle nativo do Leaflet no canto superior direito
+  // 4. Adicionamos o controle nativo
   L.control.layers(mapasBase, null, { position: "topright" }).addTo(map);
 
   // ==========================================

@@ -894,6 +894,103 @@ body {
 }
 
 /* ============================================
+   MENU DE MAPAS TIPO GOOGLE MAPS
+   ============================================ */
+/* Esconde as bolinhas (radio buttons) de seleção originais */
+.leaflet-control-layers-selector {
+  display: none !important;
+}
+
+/* Modifica a caixa branca que abre ao passar o rato */
+.leaflet-control-layers-expanded {
+  padding: 0 !important;
+  border-radius: 12px !important;
+  box-shadow: var(--shadow-md) !important;
+  background: var(--modal-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+}
+
+/* Força a lista a ser uma linha horizontal (Flexbox) */
+.leaflet-control-layers-base {
+  display: flex !important;
+  flex-direction: row !important;
+  padding: 12px !important;
+  gap: 12px !important;
+}
+
+.leaflet-control-layers label {
+  margin: 0 !important;
+  cursor: pointer;
+}
+
+/* Estilo da caixa de cada mapa */
+.map-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 65px;
+}
+
+.map-option span {
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-top: 6px;
+  text-align: center;
+  line-height: 1.1;
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+
+/* A miniatura da imagem (Thumbnail) */
+.map-thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+/* Carrega as imagens reais dos mapas para cada botão usando coordenadas fixas (Z/X/Y) */
+.thumb-voyager {
+  background-image: url("https://a.basemaps.cartocdn.com/rastertiles/voyager/4/5/8.png");
+}
+.thumb-ruas {
+  background-image: url("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/4/8/5");
+}
+.thumb-satelite {
+  background-image: url("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/4/8/5");
+}
+.thumb-escuro {
+  background-image: url("https://a.basemaps.cartocdn.com/dark_all/4/5/8.png");
+}
+.thumb-claro {
+  background-image: url("https://a.basemaps.cartocdn.com/light_all/4/5/8.png");
+}
+
+/* Efeito ao passar o mouse (Hover) */
+.map-option:hover .map-thumb {
+  border-color: var(--text-muted);
+}
+.map-option:hover span {
+  color: var(--text-main);
+}
+
+/* Efeito visual de MAPA SELECIONADO */
+input:checked + span .map-thumb {
+  border-color: var(--hortsoy-green);
+  box-shadow: 0 4px 10px rgba(46, 125, 50, 0.4);
+  transform: scale(1.05);
+}
+input:checked + span .map-option span {
+  color: var(--hortsoy-green);
+  font-weight: 700;
+}
+
+/* ============================================
    RESPONSIVO (MOBILE)
    ============================================ */
 @media (max-width: 768px) {
