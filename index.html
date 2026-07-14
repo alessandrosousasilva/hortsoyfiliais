@@ -6,16 +6,6 @@
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0, user-scalable=yes">
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EZY4B8QDD7"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'G-EZY4B8QDD7');
-    </script>
-
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2e7d32">
@@ -183,7 +173,11 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Biblioteca do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- O Seu Motor Modular -->
+    <script type="module" src="./js/main.js"></script>
 </body>
 
 </html>
