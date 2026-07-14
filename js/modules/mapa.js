@@ -181,6 +181,7 @@ export function iniciarMapa() {
   L.control.zoom({ position: "topleft" }).addTo(map);
 
   const SidebarToggleControl = L.Control.extend({
+    // ... (Mantenha o seu código do SidebarToggleControl intacto aqui) ...
     options: { position: "topleft" },
     onAdd: function (map) {
       const container = L.DomUtil.create(
@@ -201,9 +202,47 @@ export function iniciarMapa() {
   });
   map.addControl(new SidebarToggleControl());
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "© OpenStreetMap contributors",
-  }).addTo(map);
+  // ==========================================
+  // SISTEMA DE MÚLTIPLOS MAPAS
+  // ==========================================
+
+  const mapaVoyager = L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+    { attribution: "© OpenStreetMap contributors © CARTO", maxZoom: 19 },
+  );
+  const mapaRuas = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+    { attribution: "Tiles © Esri", maxZoom: 19 },
+  );
+  const mapaSatelite = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    { attribution: "Tiles © Esri" },
+  );
+  const mapaEscuro = L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    { attribution: "© OpenStreetMap contributors © CARTO" },
+  );
+  const mapaClaro = L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    { attribution: "© OpenStreetMap contributors © CARTO" },
+  );
+
+  // 2. Definimos qual mapa aparece como padrão ao carregar a página
+  mapaRuas.addTo(map);
+
+  // 3. objeto que vai alimentar o menu (Nome no Menu : Variável da Camada)
+  const mapasBase = {
+    "Padrão (Voyager)": mapaVoyager,
+    "GPS (Esri Ruas)": mapaRuas,
+    "Satélite (Esri)": mapaSatelite,
+    "Modo Escuro (Carto)": mapaEscuro,
+    "Modo Claro (Carto)": mapaClaro,
+  };
+
+  // 4. Controle nativo do Leaflet no canto superior direito
+  L.control.layers(mapasBase, null, { position: "topright" }).addTo(map);
+
+  // ==========================================
 
   markersGroup = L.layerGroup().addTo(map);
   rainCircleLayer = L.layerGroup().addTo(map);
@@ -214,7 +253,7 @@ export function iniciarMapa() {
     logo.addEventListener("click", () => map.setView([-19.7, -47.0], 8));
   }
 
-  // Desliga a tela de carregamento (Oculta o "Carregando...")
+  // Desliga a tela de carregamento
   const loadingScreen = document.getElementById("loading-screen");
   if (loadingScreen) loadingScreen.style.display = "none";
 

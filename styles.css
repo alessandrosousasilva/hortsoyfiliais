@@ -527,25 +527,25 @@ body {
 }
 
 #music-player {
-  position: fixed;
-  top: 24px;
-  right: 24px;
-  width: 220px;
+  top: 665px;
+  left: 1405px;
+  z-index: 1000;
+  width: 300px;
   background: var(--glass-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 12px;
-  z-index: 2000;
+  border-radius: 20px;
   box-shadow: var(--shadow-md);
   text-align: center;
   transition: var(--transition);
   transform-origin: top right;
+  position: absolute;
 }
+
 #music-player:hover {
-  width: 280px;
-  padding: 16px;
+  width: 300px;
+  padding: 5px;
   background: var(--card-bg);
   border-color: var(--hortsoy-green);
 }
