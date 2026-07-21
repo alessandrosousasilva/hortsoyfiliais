@@ -990,6 +990,27 @@ input:checked + span .map-option span {
 }
 
 /* ============================================
+   BOTÃO LIMPAR ROTA
+   ============================================ */
+.btn-limpar {
+  width: 100%;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--glass-border);
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: var(--transition);
+}
+
+.btn-limpar:hover {
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444; /* Vermelho suave */
+  border-color: #ef4444;
+} /* ============================================
    RESPONSIVO (MOBILE)
    ============================================ */
 @media (max-width: 768px) {

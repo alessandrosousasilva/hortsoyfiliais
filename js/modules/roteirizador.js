@@ -42,6 +42,42 @@ export function initRoteirizador() {
 
   const btnCalcular = document.getElementById("btn-calcular-rota");
   if (btnCalcular) btnCalcular.addEventListener("click", calcularRota);
+
+  // Lógica do Botão Limpar
+  const btnLimpar = document.getElementById("btn-limpar-rota");
+  if (btnLimpar) {
+    btnLimpar.addEventListener("click", () => {
+      // 1. Esvazia todos os campos de texto da rota
+      document
+        .querySelectorAll(".route-input")
+        .forEach((input) => (input.value = ""));
+
+      // 2. Remove a linha e os marcadores da rota do mapa
+      if (typeof routingControl !== "undefined" && routingControl != null) {
+        map.removeControl(routingControl);
+        routingControl = null;
+      }
+
+      // 3. Esconde a caixa de tempo e distância (se estiver visível)
+      const routeResults = document.querySelector(".route-results");
+      if (routeResults) {
+        routeResults.style.display = "none";
+      }
+
+      // 4. Remove paradas extras e deixa apenas Origem e Destino
+      const inputsContainer = document.querySelector(".route-inputs-wrapper");
+      if (inputsContainer) {
+        const paradas = inputsContainer.querySelectorAll(".input-group");
+        // Se houver mais de 2 (origem e destino), apaga as do meio
+        for (let i = 1; i < paradas.length - 1; i++) {
+          paradas[i].remove();
+        }
+      }
+
+      // 5. Devolve o mapa à visão geral original
+      map.setView([-19.7, -47.0], 8);
+    });
+  }
 }
 
 function addWaypointInput(
