@@ -70,12 +70,27 @@ export function initRoteirizador() {
         const paradas = inputsContainer.querySelectorAll(".input-group");
         // Se houver mais de 2 (origem e destino), apaga as do meio
         for (let i = 1; i < paradas.length - 1; i++) {
+          //[cite: 4]
           paradas[i].remove();
         }
       }
 
       // 5. Devolve o mapa à visão geral original
       map.setView([-19.7, -47.0], 8);
+
+      // ==========================================
+      // 6. REMOVER OS PEDÁGIOS E O CARD
+      // ==========================================
+      // Limpa os ícones de pedágio do mapa
+      if (pedagiosMarkersLayer) {
+        pedagiosMarkersLayer.clearLayers();
+      }
+
+      // Esconde o card de resumo financeiro dos pedágios
+      const tollCard = document.getElementById("toll-card");
+      if (tollCard) {
+        tollCard.style.display = "none";
+      }
     });
   }
 }
